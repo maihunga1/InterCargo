@@ -1,0 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using InterCargo.BusinessLogic.Entities;
+
+namespace InterCargo.DataAccess;
+
+public class ApplicationDbContext : DbContext
+{
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+    {
+    }
+
+    public DbSet<User> Users { get; set; }
+
+}
