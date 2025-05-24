@@ -1,0 +1,59 @@
+﻿@page
+@using InterCargo.Pages
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Welcome to InterCargo</h1>
+            <p class="lead mb-5">Your trusted partner in cargo management</p>
+
+            <div class="row g-4">
+                <!-- User Section -->
+                <div class="col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h2 class="h4 mb-4">For Customers</h2>
+                            <div class="d-grid gap-3">
+                                <a href="/Users/LoginUser" class="btn btn-primary btn-lg">Login as User</a>
+                                <a href="/Users/RegisterUser" class="btn btn-outline-primary btn-lg">Register as
+                                    User</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employee Section -->
+                <div class="col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h2 class="h4 mb-4">For Employees</h2>
+                            <div class="d-grid gap-3">
+                                <a href="/Employees/LoginEmployee" class="btn btn-primary btn-lg">Login as Employee</a>
+                                <a href="/Employees/RegisterEmployee" class="btn btn-outline-primary btn-lg">Register as
+                                    Employee</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .btn {
+        padding: 0.8rem 1.5rem;
+    }
+</style>

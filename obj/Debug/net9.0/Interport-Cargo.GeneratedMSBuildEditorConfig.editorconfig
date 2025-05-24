@@ -1,19 +1,11 @@
 is_global = true
 build_property.TargetFramework = net9.0
-build_property.TargetFramework = net9.0
-build_property.TargetPlatformMinVersion = 
 build_property.TargetPlatformMinVersion = 
 build_property.UsingMicrosoftNETSdkWeb = true
-build_property.UsingMicrosoftNETSdkWeb = true
-build_property.ProjectTypeGuids = 
 build_property.ProjectTypeGuids = 
 build_property.InvariantGlobalization = 
-build_property.InvariantGlobalization = 
-build_property.PlatformNeutralAssembly = 
 build_property.PlatformNeutralAssembly = 
 build_property.EnforceExtendedAnalyzerRules = 
-build_property.EnforceExtendedAnalyzerRules = 
-build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = InterCargo
 build_property.RootNamespace = InterCargo
@@ -28,38 +20,38 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[/Users/qhungmai/Documents/Interport-Cargo/Pages/Error.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXJyb3IuY3NodG1s
+[/Users/qhungmai/Documents/Interport-Cargo/Interport-Cargo/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = SW50ZXJwb3J0LUNhcmdvL1BhZ2VzL0Vycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/qhungmai/Documents/Interport-Cargo/Pages/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXguY3NodG1s
+[/Users/qhungmai/Documents/Interport-Cargo/Interport-Cargo/Pages/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = SW50ZXJwb3J0LUNhcmdvL1BhZ2VzL0luZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/qhungmai/Documents/Interport-Cargo/Pages/Privacy.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUHJpdmFjeS5jc2h0bWw=
+[/Users/qhungmai/Documents/Interport-Cargo/Interport-Cargo/Pages/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = SW50ZXJwb3J0LUNhcmdvL1BhZ2VzL1ByaXZhY3kuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/qhungmai/Documents/Interport-Cargo/Pages/Shared/_ValidationScriptsPartial.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+[/Users/qhungmai/Documents/Interport-Cargo/Interport-Cargo/Pages/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = SW50ZXJwb3J0LUNhcmdvL1BhZ2VzL1NoYXJlZC9fVmFsaWRhdGlvblNjcmlwdHNQYXJ0aWFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/qhungmai/Documents/Interport-Cargo/Pages/Users/LoginUser.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVXNlcnMvTG9naW5Vc2VyLmNzaHRtbA==
+[/Users/qhungmai/Documents/Interport-Cargo/Interport-Cargo/Pages/Users/LoginUser.cshtml]
+build_metadata.AdditionalFiles.TargetPath = SW50ZXJwb3J0LUNhcmdvL1BhZ2VzL1VzZXJzL0xvZ2luVXNlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/qhungmai/Documents/Interport-Cargo/Pages/Users/RegisterUser.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVXNlcnMvUmVnaXN0ZXJVc2VyLmNzaHRtbA==
+[/Users/qhungmai/Documents/Interport-Cargo/Interport-Cargo/Pages/Users/RegisterUser.cshtml]
+build_metadata.AdditionalFiles.TargetPath = SW50ZXJwb3J0LUNhcmdvL1BhZ2VzL1VzZXJzL1JlZ2lzdGVyVXNlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/qhungmai/Documents/Interport-Cargo/Pages/_ViewImports.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+[/Users/qhungmai/Documents/Interport-Cargo/Interport-Cargo/Pages/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = SW50ZXJwb3J0LUNhcmdvL1BhZ2VzL19WaWV3SW1wb3J0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/qhungmai/Documents/Interport-Cargo/Pages/_ViewStart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX1ZpZXdTdGFydC5jc2h0bWw=
+[/Users/qhungmai/Documents/Interport-Cargo/Interport-Cargo/Pages/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = SW50ZXJwb3J0LUNhcmdvL1BhZ2VzL19WaWV3U3RhcnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/qhungmai/Documents/Interport-Cargo/Pages/Shared/_Layout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2hhcmVkL19MYXlvdXQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = b-kylmemnh6u
+[/Users/qhungmai/Documents/Interport-Cargo/Interport-Cargo/Pages/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = SW50ZXJwb3J0LUNhcmdvL1BhZ2VzL1NoYXJlZC9fTGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = b-tozvewa66l

@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "name": "C#: Interport-Cargo [Default Configuration]",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/InterCargo/Interport-Cargo.csproj"
+        }
+    ]
+}
