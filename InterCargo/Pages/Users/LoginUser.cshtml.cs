@@ -50,15 +50,14 @@ namespace InterCargo.Pages.Users
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
             var identity = new ClaimsIdentity(claims, "login");
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(principal);
 
-            SuccessMessage = "Login successful!";
-            ModelState.Clear();
-            return Page();
+            return RedirectToPage("/Quotations/Submit");
         }
 
         private string HashPassword(string password)

@@ -32,6 +32,10 @@ builder.Services.AddScoped<IEmployeeAppService, EmployeeAppService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
+builder.Services.AddScoped<IQuotationAppService, QuotationAppService>();
+builder.Services.AddScoped<IQuotationService, QuotationService>();
+builder.Services.AddScoped<IQuotationRepository, QuotationRepository>();
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("User", policy =>

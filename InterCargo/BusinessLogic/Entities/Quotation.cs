@@ -6,7 +6,7 @@ namespace InterCargo.BusinessLogic.Entities
     {
         [Key]
         public Guid Id { get; set; }
-        public string CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
         public string Source { get; set; }
         public string Destination { get; set; }
         public int NumberOfContainers { get; set; }

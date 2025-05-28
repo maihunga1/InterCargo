@@ -1,0 +1,41 @@
+@page
+@model InterCargo.Pages.Quotations.SubmitModel
+@{
+    ViewData["Title"] = "Submit Quotation";
+}
+
+<h2>Submit Quotation</h2>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Quotation.Source">Source:</label>
+        <input asp-for="Quotation.Source" class="form-control" />
+        <span asp-validation-for="Quotation.Source" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Quotation.Destination">Destination:</label>
+        <input asp-for="Quotation.Destination" class="form-control" />
+        <span asp-validation-for="Quotation.Destination" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Quotation.NumberOfContainers">Number of Containers:</label>
+        <input asp-for="Quotation.NumberOfContainers" type="number" class="form-control" min="1" />
+        <span asp-validation-for="Quotation.NumberOfContainers" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Quotation.PackageNature">Nature of Package:</label>
+        <input asp-for="Quotation.PackageNature" class="form-control" />
+        <span asp-validation-for="Quotation.PackageNature" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Quotation.JobNature">Nature of Job:</label>
+        <textarea asp-for="Quotation.JobNature" class="form-control"></textarea>
+        <span asp-validation-for="Quotation.JobNature" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -48,6 +48,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUHJpdmFjeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/qhungmai/Documents/Interport-Cargo/InterCargo/Pages/Quotations/Confirmation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUXVvdGF0aW9ucy9Db25maXJtYXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/qhungmai/Documents/Interport-Cargo/InterCargo/Pages/Quotations/Submit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUXVvdGF0aW9ucy9TdWJtaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/qhungmai/Documents/Interport-Cargo/InterCargo/Pages/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
