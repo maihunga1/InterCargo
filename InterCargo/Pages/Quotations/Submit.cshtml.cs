@@ -19,6 +19,9 @@ namespace InterCargo.Pages.Quotations
         [BindProperty]
         public Quotation Quotation { get; set; }
 
+        [TempData]
+        public string StatusMessage { get; set; }
+
         public IActionResult OnGet()
         {
             if (!User.Identity.IsAuthenticated)
@@ -55,7 +58,8 @@ namespace InterCargo.Pages.Quotations
 
                 await _quotationService.AddQuotationAsync(Quotation);
 
-                return RedirectToPage("Confirmation");
+                StatusMessage = "Quotation submitted successfully!";
+                return Page();
             }
             catch (Exception ex)
             {
