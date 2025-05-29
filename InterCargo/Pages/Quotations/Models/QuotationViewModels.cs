@@ -10,7 +10,9 @@ public class QuotationViewModel
     public string Destination { get; set; }
     public int NumberOfContainers { get; set; }
     public string PackageNature { get; set; }
-    public string JobNature { get; set; }
+    public string ImportExportType { get; set; }
+    public string PackingUnpacking { get; set; }
+    public string QuarantineRequirements { get; set; }
     public string Status { get; set; }
     public string Message { get; set; }
     public DateTime DateIssued { get; set; }
@@ -28,7 +30,9 @@ public static class QuotationViewModelExtensions
             Destination = model.Destination,
             NumberOfContainers = model.NumberOfContainers,
             PackageNature = model.PackageNature,
-            JobNature = model.JobNature,
+            ImportExportType = model.ImportExportType,
+            PackingUnpacking = model.PackingUnpacking,
+            QuarantineRequirements = model.QuarantineRequirements,
             Status = model.Status,
             Message = model.Message,
             DateIssued = model.DateIssued

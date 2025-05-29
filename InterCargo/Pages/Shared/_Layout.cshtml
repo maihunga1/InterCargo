@@ -29,10 +29,19 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
                     </ul>
+                    <ul class="navbar-nav">
+                        @if (User.Identity.IsAuthenticated && Context.Request.Path.StartsWithSegments("/Quotations"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" asp-area="" asp-page="/Users/Logout">Logout</a>
+                            </li>
+                        }
+                    </ul>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

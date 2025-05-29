@@ -48,10 +48,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUHJpdmFjeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/qhungmai/Documents/Interport-Cargo/InterCargo/Pages/Quotations/Confirmation.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUXVvdGF0aW9ucy9Db25maXJtYXRpb24uY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
 [/Users/qhungmai/Documents/Interport-Cargo/InterCargo/Pages/Quotations/Submit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUXVvdGF0aW9ucy9TdWJtaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -62,6 +58,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/Users/qhungmai/Documents/Interport-Cargo/InterCargo/Pages/Users/LoginUser.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVXNlcnMvTG9naW5Vc2VyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/qhungmai/Documents/Interport-Cargo/InterCargo/Pages/Users/Logout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVXNlcnMvTG9nb3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/qhungmai/Documents/Interport-Cargo/InterCargo/Pages/Users/RegisterUser.cshtml]

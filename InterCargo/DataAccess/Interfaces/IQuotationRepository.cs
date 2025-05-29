@@ -6,6 +6,6 @@ namespace InterCargo.DataAccess.Interfaces
     {
         Task AddQuotationAsync(Quotation quotation);
         Task<List<Quotation>> GetQuotationsByCustomerAsync(string customerId);
-        Task<Quotation?> GetQuotationByIdAsync(int id);
+        Task<Quotation?> GetQuotationByIdAsync(Guid id);
     }
 }

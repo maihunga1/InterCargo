@@ -375,7 +375,6 @@
 /Users/qhungmai/Documents/Interport-Cargo/InterCargo/obj/Debug/net9.0/scopedcss/Pages/Shared/_Layout.cshtml.rz.scp.css
 /Users/qhungmai/Documents/Interport-Cargo/InterCargo/obj/Debug/net9.0/scopedcss/bundle/Interport-Cargo.styles.css
 /Users/qhungmai/Documents/Interport-Cargo/InterCargo/obj/Debug/net9.0/scopedcss/projectbundle/Interport-Cargo.bundle.scp.css
-/Users/qhungmai/Documents/Interport-Cargo/InterCargo/obj/Debug/net9.0/compressed/c6i3iyoak5-b9sayid5wm.gz
 /Users/qhungmai/Documents/Interport-Cargo/InterCargo/obj/Debug/net9.0/compressed/zrs5ascmub-61n19gt1b8.gz
 /Users/qhungmai/Documents/Interport-Cargo/InterCargo/obj/Debug/net9.0/compressed/03i81iexr9-xtxxf3hu2r.gz
 /Users/qhungmai/Documents/Interport-Cargo/InterCargo/obj/Debug/net9.0/compressed/vq34mbghsd-bqjiyaj88i.gz
@@ -454,3 +453,4 @@
 /Users/qhungmai/Documents/Interport-Cargo/InterCargo/obj/Debug/net9.0/Interport-Cargo.pdb
 /Users/qhungmai/Documents/Interport-Cargo/InterCargo/obj/Debug/net9.0/Interport-Cargo.genruntimeconfig.cache
 /Users/qhungmai/Documents/Interport-Cargo/InterCargo/obj/Debug/net9.0/ref/Interport-Cargo.dll
+/Users/qhungmai/Documents/Interport-Cargo/InterCargo/obj/Debug/net9.0/compressed/c6i3iyoak5-wldydlrl5t.gz
