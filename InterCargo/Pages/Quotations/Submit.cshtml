@@ -4,46 +4,116 @@
     ViewData["Title"] = "Submit Quotation";
 }
 
-<h2>Submit Quotation</h2>
+<div class="container">
+    <h2 class="mb-4">Submit Quotation Request</h2>
 
-@if (!string.IsNullOrEmpty(Model.StatusMessage))
-{
-    <div class="alert alert-success">
-        @Model.StatusMessage
-    </div>
-}
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="alert alert-success">
+            @Model.StatusMessage
+        </div>
+    }
 
-<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-<form method="post">
-    <div class="form-group">
-        <label asp-for="Quotation.Source">Source:</label>
-        <input asp-for="Quotation.Source" class="form-control" />
-        <span asp-validation-for="Quotation.Source" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Quotation.Destination">Destination:</label>
-        <input asp-for="Quotation.Destination" class="form-control" />
-        <span asp-validation-for="Quotation.Destination" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Quotation.NumberOfContainers">Number of Containers:</label>
-        <input asp-for="Quotation.NumberOfContainers" type="number" class="form-control" min="1" />
-        <span asp-validation-for="Quotation.NumberOfContainers" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Quotation.PackageNature">Nature of Package:</label>
-        <input asp-for="Quotation.PackageNature" class="form-control" />
-        <span asp-validation-for="Quotation.PackageNature" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Quotation.JobNature">Nature of Job:</label>
-        <textarea asp-for="Quotation.JobNature" class="form-control"></textarea>
-        <span asp-validation-for="Quotation.JobNature" class="text-danger"></span>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Request ID: <span class="text-muted">Will be generated upon submission</span></h5>
+        </div>
+        <div class="card-body">
+            <h6>Customer Information:</h6>
+            <p class="mb-0">Name: @Model.CustomerName</p>
+            <p class="mb-0">Company: @Model.CustomerCompany</p>
+            <p>Email: @Model.CustomerEmail</p>
+        </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <form method="post">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label asp-for="Quotation.Source" class="form-label"></label>
+                    <input asp-for="Quotation.Source" class="form-control" required />
+                    <span asp-validation-for="Quotation.Source" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label asp-for="Quotation.Destination" class="form-label"></label>
+                    <input asp-for="Quotation.Destination" class="form-control" required />
+                    <span asp-validation-for="Quotation.Destination" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label asp-for="Quotation.NumberOfContainers" class="form-label"></label>
+                    <input asp-for="Quotation.NumberOfContainers" type="number" class="form-control" min="1" required />
+                    <span asp-validation-for="Quotation.NumberOfContainers" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label asp-for="Quotation.PackageNature" class="form-label"></label>
+                    <input asp-for="Quotation.PackageNature" class="form-control" required />
+                    <span asp-validation-for="Quotation.PackageNature" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Nature of Job</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="Quotation.JobType" class="form-label"></label>
+                            <select asp-for="Quotation.JobType" asp-items="Html.GetEnumSelectList<InterCargo.BusinessLogic.Entities.JobType>()" class="form-select" required>
+                                <option value="">Select Job Type</option>
+                            </select>
+                            <span asp-validation-for="Quotation.JobType" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-check mb-3">
+                            <input asp-for="Quotation.RequiresPacking" class="form-check-input" type="checkbox" />
+                            <label asp-for="Quotation.RequiresPacking" class="form-check-label"></label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check mb-3">
+                            <input asp-for="Quotation.RequiresUnpacking" class="form-check-input" type="checkbox" />
+                            <label asp-for="Quotation.RequiresUnpacking" class="form-check-label"></label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check mb-3">
+                            <input asp-for="Quotation.RequiresQuarantine" class="form-check-input" type="checkbox" />
+                            <label asp-for="Quotation.RequiresQuarantine" class="form-check-label"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Quotation.AdditionalJobDetails" class="form-label"></label>
+                    <textarea asp-for="Quotation.AdditionalJobDetails" class="form-control" rows="3" placeholder="Enter any additional details about the job..."></textarea>
+                    <span asp-validation-for="Quotation.AdditionalJobDetails" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-primary">Submit Quotation Request</button>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

@@ -10,10 +10,12 @@ namespace InterCargo.Pages.Quotations
     public class SubmitModel : PageModel
     {
         private readonly IQuotationAppService _quotationService;
+        private readonly IUserAppService _userService;
 
-        public SubmitModel(IQuotationAppService quotationService)
+        public SubmitModel(IQuotationAppService quotationService, IUserAppService userService)
         {
             _quotationService = quotationService;
+            _userService = userService;
         }
 
         [BindProperty]
@@ -22,12 +24,41 @@ namespace InterCargo.Pages.Quotations
         [TempData]
         public string StatusMessage { get; set; }
 
-        public IActionResult OnGet()
+        public string CustomerName { get; set; }
+        public string CustomerEmail { get; set; }
+        public string CustomerCompany { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return RedirectToPage("/Account/Login", new { returnUrl = Url.Page("/Quotations/Submit") });
+                return RedirectToPage("/Users/LoginUser", new { returnUrl = Url.Page("/Quotations/Submit") });
             }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToPage("/Users/LoginUser");
+            }
+
+            try
+            {
+                var user = await _userService.GetUserByIdAsync(Guid.Parse(userId));
+                if (user != null)
+                {
+                    CustomerName = $"{user.FirstName} {user.FamilyName}";
+                    CustomerEmail = user.Email;
+                    CustomerCompany = user.CompanyName;
+                }
+            }
+            catch (Exception)
+            {
+                // Log the error but don't stop the page from loading
+                CustomerName = "Not available";
+                CustomerEmail = "Not available";
+                CustomerCompany = "Not available";
+            }
+
             return Page();
         }
 
@@ -35,11 +66,19 @@ namespace InterCargo.Pages.Quotations
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return RedirectToPage("/Account/Login", new { returnUrl = Url.Page("/Quotations/Submit") });
+                return RedirectToPage("/Users/LoginUser", new { returnUrl = Url.Page("/Quotations/Submit") });
             }
 
             if (!ModelState.IsValid)
             {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = await _userService.GetUserByIdAsync(Guid.Parse(userId));
+                if (user != null)
+                {
+                    CustomerName = $"{user.FirstName} {user.FamilyName}";
+                    CustomerEmail = user.Email;
+                    CustomerCompany = user.CompanyName;
+                }
                 return Page();
             }
 
@@ -58,8 +97,8 @@ namespace InterCargo.Pages.Quotations
 
                 await _quotationService.AddQuotationAsync(Quotation);
 
-                StatusMessage = "Quotation submitted successfully!";
-                return Page();
+                StatusMessage = "Quotation request submitted successfully! Your request ID is: " + Quotation.Id;
+                return RedirectToPage("./Confirmation", new { id = Quotation.Id });
             }
             catch (Exception ex)
             {

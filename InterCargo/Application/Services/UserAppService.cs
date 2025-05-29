@@ -1,6 +1,6 @@
+using InterCargo.Application.Interfaces;
 using InterCargo.BusinessLogic.Entities;
 using InterCargo.BusinessLogic.Interfaces;
-using InterCargo.Application.Interfaces;
 
 namespace InterCargo.Application.Services;
 
@@ -13,33 +13,33 @@ public class UserAppService : IUserAppService
         _userService = userService;
     }
 
-    public List<User> GetAllUsers()
+    public async Task<User> GetUserByIdAsync(Guid id)
     {
-        return _userService.GetAllUsers();
+        return await _userService.GetUserByIdAsync(id);
     }
 
-    public User GetUserById(Guid id)
+    public async Task<User> GetUserByEmailAsync(string email)
     {
-        return _userService.GetUserById(id);
+        return await _userService.GetUserByEmailAsync(email);
     }
 
-    public void AddUser(User user)
+    public async Task<bool> CreateUserAsync(User user)
     {
-        _userService.AddUser(user);
+        return await _userService.CreateUserAsync(user);
     }
 
-    public void UpdateUser(User user)
+    public async Task<bool> UpdateUserAsync(User user)
     {
-        _userService.UpdateUser(user);
+        return await _userService.UpdateUserAsync(user);
     }
 
-    public void DeleteUser(Guid id)
+    public async Task<bool> DeleteUserAsync(Guid id)
     {
-        _userService.DeleteUser(id);
+        return await _userService.DeleteUserAsync(id);
     }
 
-    public async Task<User> GetUserByUsername(string username)
+    public async Task<bool> ValidateUserCredentialsAsync(string email, string password)
     {
-        return await _userService.GetUserByUsername(username);
+        return await _userService.ValidateUserCredentialsAsync(email, password);
     }
 }
