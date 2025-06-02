@@ -1,8 +1,8 @@
 using InterCargo.BusinessLogic.Entities;
 
-namespace InterCargo.DataAccess.Interfaces
+namespace InterCargo.BusinessLogic.Interfaces
 {
-    public interface IQuotationRepository
+    public interface IQuotationService
     {
         Task AddQuotationAsync(Quotation quotation);
         Task<List<Quotation>> GetQuotationsByCustomerAsync(string customerId);

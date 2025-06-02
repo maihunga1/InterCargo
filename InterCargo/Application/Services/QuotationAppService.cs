@@ -23,7 +23,7 @@ public class QuotationAppService : IQuotationAppService
         return await _quotationService.GetQuotationsByCustomerAsync(customerId);
     }
 
-    public async Task<Quotation?> GetQuotationByIdAsync(int id)
+    public async Task<Quotation?> GetQuotationByIdAsync(Guid id)
     {
         return await _quotationService.GetQuotationByIdAsync(id);
     }

@@ -26,7 +26,7 @@ public class QuotationRepository : IQuotationRepository
             .ToListAsync();
     }
 
-    public async Task<Quotation?> GetQuotationByIdAsync(int id)
+    public async Task<Quotation?> GetQuotationByIdAsync(Guid id)
     {
         return await _context.Quotations.FindAsync(id);
     }
