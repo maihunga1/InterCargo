@@ -6,6 +6,9 @@
 
 <div class="container">
     <h2 class="mb-4">Submit Quotation Request</h2>
+    <div class="text-muted">
+        Request ID: <strong>@Model.Quotation.Id</strong>
+    </div>
 
     @if (!string.IsNullOrEmpty(Model.StatusMessage))
     {
@@ -16,7 +19,7 @@
 
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0">Request ID: <span class="text-muted">Will be generated upon submission</span></h5>
+            <h5 class="mb-0">Customer Information</h5>
         </div>
         <div class="card-body">
             <h6>Customer Information:</h6>

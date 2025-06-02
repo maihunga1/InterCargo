@@ -3,6 +3,7 @@ using System;
 using InterCargo.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InterCargo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250529012627_QuotationsTable")]
+    partial class QuotationsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.4");
@@ -79,7 +82,7 @@ namespace InterCargo.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ImportExportType")
+                    b.Property<string>("JobNature")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -91,14 +94,6 @@ namespace InterCargo.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("PackageNature")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PackingUnpacking")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("QuarantineRequirements")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

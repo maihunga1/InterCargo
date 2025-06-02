@@ -24,7 +24,6 @@ public class QuotationViewModel
     [Required]
     [Display(Name = "Nature of Package")]
     public string PackageNature { get; set; }
-
     [Required]
     [Display(Name = "Job Type")]
     public JobType JobType { get; set; }
@@ -40,7 +39,6 @@ public class QuotationViewModel
 
     [Display(Name = "Additional Job Details")]
     public string AdditionalJobDetails { get; set; }
-
     public string Status { get; set; }
     public string Message { get; set; }
     public DateTime DateIssued { get; set; }
