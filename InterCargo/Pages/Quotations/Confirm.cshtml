@@ -1,0 +1,249 @@
+@page
+@model InterCargo.Pages.Quotations.ConfirmModel
+@{
+    ViewData["Title"] = "Confirm Quotations";
+}
+
+<style>
+    .modal-blur {
+        filter: blur(6px) grayscale(0.2) brightness(0.95);
+        transition: filter 0.2s;
+    }
+</style>
+
+<div class="container mt-4">
+    <h2>Quotations</h2>
+    <div class="mb-3">
+        <div class="btn-group" role="group">
+            <a href="?status=all"
+                class="btn btn-outline-primary @(Model.FilterStatus == null || Model.FilterStatus == "all" ? "active" : "")">All</a>
+            <a href="?status=pending"
+                class="btn btn-outline-warning @(Model.FilterStatus == "pending" ? "active" : "")">Pending</a>
+            <a href="?status=approved"
+                class="btn btn-outline-success @(Model.FilterStatus == "approved" ? "active" : "")">Accepted</a>
+            <a href="?status=rejected"
+                class="btn btn-outline-danger @(Model.FilterStatus == "rejected" ? "active" : "")">Rejected</a>
+        </div>
+    </div>
+
+    @if (TempData["StatusMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["StatusMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!Model.AllQuotations.Any())
+    {
+        <div class="alert alert-info">
+            No quotations found.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Source</th>
+                        <th>Destination</th>
+                        <th>Containers</th>
+                        <th>Package Nature</th>
+                        <th>Import/Export</th>
+                        <th>Status</th>
+                        <th>Date Issued</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var quotation in Model.AllQuotations)
+                    {
+                        <tr>
+                            <td>@quotation.Id.ToString("N").Substring(0, 8).ToUpper()</td>
+                            <td>@quotation.Source</td>
+                            <td>@quotation.Destination</td>
+                            <td>@quotation.NumberOfContainers</td>
+                            <td>@quotation.PackageNature</td>
+                            <td>@quotation.ImportExportType</td>
+                            <td>
+                                <span class="badge @(quotation.Status.ToLower() switch {
+                                    "approved" => "bg-success",
+                                    "rejected" => "bg-danger",
+                                    _ => "bg-warning"
+                                })">
+                                    @quotation.Status
+                                </span>
+                            </td>
+                            <td>@quotation.DateIssued.ToString("g")</td>
+                            <td>
+                                <a href="?viewId=@quotation.Id&status=@Model.FilterStatus" class="btn btn-info btn-sm">View Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @if (Model.SelectedQuotation != null)
+    {
+        <div class="modal show d-block" tabindex="-1" style="background:rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Quotation Details - @Model.SelectedQuotation.Id.ToString("N").Substring(0, 8).ToUpper()</h5>
+                        <a href="?status=@Model.FilterStatus" class="btn-close"></a>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <h6>Customer Information</h6>
+                                @if (Model.SelectedUser != null)
+                                {
+                                    <ul class="list-group mb-2">
+                                        <li class="list-group-item"><strong>Full Name:</strong> @Model.SelectedUser.FirstName @Model.SelectedUser.FamilyName</li>
+                                        <li class="list-group-item"><strong>Email:</strong> @Model.SelectedUser.Email</li>
+                                        <li class="list-group-item"><strong>Phone Number:</strong> @Model.SelectedUser.PhoneNumber</li>
+                                        <li class="list-group-item"><strong>Company:</strong> @Model.SelectedUser.CompanyName</li>
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-warning">Customer information not found.</div>
+                                }
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h6>Source</h6>
+                                <p>@Model.SelectedQuotation.Source</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Destination</h6>
+                                <p>@Model.SelectedQuotation.Destination</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h6>Number of Containers</h6>
+                                <p>@Model.SelectedQuotation.NumberOfContainers</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Container Type</h6>
+                                <p>@Model.SelectedQuotation.ContainerType</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h6>Package Nature</h6>
+                                <p>@Model.SelectedQuotation.PackageNature</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Import/Export Type</h6>
+                                <p>@Model.SelectedQuotation.ImportExportType</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h6>Packing/Unpacking</h6>
+                                <p>@Model.SelectedQuotation.PackingUnpacking</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Quarantine Requirements</h6>
+                                <p>@Model.SelectedQuotation.QuarantineRequirements</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h6>Status</h6>
+                                <p>@Model.SelectedQuotation.Status</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Date Issued</h6>
+                                <p>@Model.SelectedQuotation.DateIssued.ToString("g")</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <h6>Customer Response</h6>
+                                @if (!string.IsNullOrEmpty(Model.SelectedQuotation.CustomerResponseStatus))
+                                {
+                                    <div class="alert alert-info">
+                                        <strong>Status:</strong> @Model.SelectedQuotation.CustomerResponseStatus<br />
+                                        <strong>Message:</strong> @Model.SelectedQuotation.CustomerResponseMessage
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-secondary">No response from customer yet.</div>
+                                }
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <h6>Status Message</h6>
+                                <div class="alert alert-info">@Model.SelectedQuotation.Message</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        @if (Model.SelectedQuotation.Status == "Pending")
+                        {
+                            <a href="/Quotations/Prepare?quotationId=@Model.SelectedQuotation.Id" class="btn btn-success btn-sm me-2">Accept</a>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="showRejectPopup()">Reject</button>
+                            <a href="?status=@Model.FilterStatus" class="btn btn-secondary">Close</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.SelectedQuotation != null)
+    {
+        <div class="modal fade" id="rejectModalPopup" tabindex="-1" aria-labelledby="rejectModalPopupLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="rejectModalPopupLabel">Reject Quotation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="quotationId" value="@Model.SelectedQuotation.Id" />
+                            <div class="mb-3">
+                                <label for="rejectionMessagePopup" class="form-label">Rejection Reason</label>
+                                <textarea class="form-control" id="rejectionMessagePopup"
+                                    name="rejectionMessage" rows="4" required
+                                    placeholder="Please provide a reason for rejecting this quotation"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" name="action" value="reject" class="btn btn-danger">Confirm Rejection</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function showRejectPopup() {
+            var detailsModal = document.querySelector('.modal.show.d-block');
+            detailsModal.classList.add('modal-blur');
+            detailsModal.style.pointerEvents = 'none';
+            var rejectModal = new bootstrap.Modal(document.getElementById('rejectModalPopup'));
+            rejectModal.show();
+            document.getElementById('rejectModalPopup').addEventListener('hidden.bs.modal', function () {
+                detailsModal.classList.remove('modal-blur');
+                detailsModal.style.pointerEvents = '';
+            }, { once: true });
+        }
+    </script>
+}

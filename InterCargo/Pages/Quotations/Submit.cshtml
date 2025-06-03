@@ -36,6 +36,15 @@
         <input asp-for="Input.NumberOfContainers" type="number" class="form-control" min="1" />
         <span asp-validation-for="Input.NumberOfContainers" class="text-danger"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="Input.ContainerType">Container Type:</label>
+        <select asp-for="Input.ContainerType" class="form-control">
+            <option value="">Select Container Type</option>
+            <option value="20Feet">20 Feet</option>
+            <option value="40Feet">40 Feet</option>
+        </select>
+        <span asp-validation-for="Input.ContainerType" class="text-danger"></span>
+    </div>
     <div class="form-group mb-4">
         <label asp-for="Input.PackageNature">Nature of Package:</label>
         <input asp-for="Input.PackageNature" class="form-control" />

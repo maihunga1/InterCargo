@@ -1,0 +1,307 @@
+@page
+@model InterCargo.Pages.Users.DashboardModel
+@{
+    ViewData["Title"] = "User Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Welcome to Your Dashboard</h2>
+        </div>
+        <div class="col text-end">
+            <a href="/Quotations/Submit" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Submit New Quotation
+            </a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="card-title mb-0">Your Quotations</h3>
+                </div>
+                <div class="col-auto">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary filter-btn active"
+                            data-status="all">All</button>
+                        <button type="button" class="btn btn-outline-warning filter-btn"
+                            data-status="pending">Pending</button>
+                        <button type="button" class="btn btn-outline-success filter-btn"
+                            data-status="approved">Approved</button>
+                        <button type="button" class="btn btn-outline-danger filter-btn"
+                            data-status="rejected">Rejected</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (!Model.UserQuotations.Any())
+            {
+                <div class="alert alert-info">
+                    You haven't submitted any quotations yet. Click the button above to submit your first quotation.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Source</th>
+                                <th>Destination</th>
+                                <th>Containers</th>
+                                <th>Status</th>
+                                <th>Date Submitted</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var quotation in Model.UserQuotations.OrderByDescending(q => q.DateIssued))
+                            {
+                                <tr class="quotation-row" data-status="@quotation.Status.ToLower()">
+                                    <td>@quotation.Id.ToString("N").Substring(0, 8).ToUpper()</td>
+                                    <td>@quotation.Source</td>
+                                    <td>@quotation.Destination</td>
+                                    <td>@quotation.NumberOfContainers</td>
+                                    <td>
+                                        <span class="badge @(quotation.Status.ToLower() switch {
+                                            "approved" => "bg-success",
+                                            "rejected" => "bg-danger",
+                                            _ => "bg-warning"
+                                        })">
+                                            @quotation.Status
+                                        </span>
+                                    </td>
+                                    <td>@quotation.DateIssued.ToString("g")</td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#quotationModal-@quotation.Id">
+                                            View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@foreach (var quotation in Model.UserQuotations.OrderByDescending(q => q.DateIssued))
+{
+    <!-- Quotation Details Modal -->
+    <div class="modal fade" id="quotationModal-@quotation.Id" tabindex="-1"
+        aria-labelledby="quotationModalLabel-@quotation.Id" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="quotationModalLabel-@quotation.Id">
+                        Quotation Details - @quotation.Id.ToString("N").Substring(0, 8).ToUpper()
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6>Source</h6>
+                            <p>@quotation.Source</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Destination</h6>
+                            <p>@quotation.Destination</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6>Number of Containers</h6>
+                            <p>@quotation.NumberOfContainers</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Container Ty</h6>
+                            <p>@quotation.ContainerType</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Package Nature</h6>
+                            <p>@quotation.PackageNature</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6>Import/Export Type</h6>
+                            <p>@quotation.ImportExportType</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Packing/Unpacking</h6>
+                            <p>@quotation.PackingUnpacking</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6>Quarantine Requirements</h6>
+                            <p>@quotation.QuarantineRequirements</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6>Status Message</h6>
+                            <div
+                                class="alert @(quotation.Status.ToLower() switch {
+                                    "approved" => "alert-success",
+                                    "rejected" => "alert-danger",
+                                    _ => "alert-warning"
+                                })">
+                                @quotation.Message
+                            </div>
+                        </div>
+                    </div>
+                    @if (quotation.Status == "Approved")
+                    {
+                        // Always show price breakdown for approved quotations
+                        if (Model.QuotationPriceBreakdowns.ContainsKey(quotation.Id) && Model.QuotationSelectedChargeItems.ContainsKey(quotation.Id))
+                        {
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <div class="card mb-4">
+                                        <div class="card-header bg-info text-white">
+                                            <h5 class="mb-0">Quotation Price Breakdown</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Charge Item</th>
+                                                        <th>Amount (AUD)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.QuotationSelectedChargeItems[quotation.Id])
+                                                    {
+                                                        if (Model.QuotationPriceBreakdowns[quotation.Id].ContainsKey(item))
+                                                        {
+                                                            <tr>
+                                                                <td>@item</td>
+                                                                <td>@Model.QuotationPriceBreakdowns[quotation.Id][item].ToString("C")</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                    @if (Model.QuotationPriceBreakdowns[quotation.Id].ContainsKey("GST (10%)"))
+                                                    {
+                                                        <tr>
+                                                            <td>GST (10%)</td>
+                                                            <td>@Model.QuotationPriceBreakdowns[quotation.Id]["GST (10%)"].ToString("C")</td>
+                                                        </tr>
+                                                    }
+                                                    @if (quotation.Discount.HasValue && quotation.Discount.Value > 0)
+                                                    {
+                                                        <tr>
+                                                            <td>Discount</td>
+                                                            <td>@quotation.Discount.Value.ToString("F2")%</td>
+                                                        </tr>
+                                                    }
+                                                    @if (quotation.FinalPrice.HasValue)
+                                                    {
+                                                        <tr>
+                                                            <td><strong>Total</strong></td>
+                                                            <td><strong>@quotation.FinalPrice.Value.ToString("C")</strong></td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        // Accept/Reject buttons and response form
+                        if (string.IsNullOrEmpty(quotation.CustomerResponseStatus) || quotation.CustomerResponseStatus == "Pending")
+                        {
+                            <form method="post" asp-page-handler="Respond">
+                                <input type="hidden" name="quotationId" value="@quotation.Id" />
+                                <div class="mb-3">
+                                    <label><strong>Do you accept this offer?</strong></label><br />
+                                    <button type="submit" name="CustomerResponseStatus" value="Accepted" class="btn btn-success">Accept</button>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="collapse" data-bs-target="#declineReason-@quotation.Id">Reject</button>
+                                </div>
+                                <div class="collapse" id="declineReason-@quotation.Id">
+                                    <div class="mb-3">
+                                        <label for="CustomerResponseMessage-@quotation.Id">Please tell us why you decline:</label>
+                                        <textarea name="CustomerResponseMessage" class="form-control" id="CustomerResponseMessage-@quotation.Id"></textarea>
+                                    </div>
+                                    <button type="submit" name="CustomerResponseStatus" value="Declined" class="btn btn-danger">Submit Decline</button>
+                                </div>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">
+                                You have responded: <strong>@quotation.CustomerResponseStatus</strong><br />
+                                @quotation.CustomerResponseMessage
+                            </div>
+                        }
+                    }
+                    else if (quotation.Status == "Rejected")
+                    {
+                        <div class="alert alert-danger">
+                            This quotation was rejected by the employee.<br />
+                            <strong>Reason:</strong> @quotation.Message
+                        </div>
+                        @if (string.IsNullOrEmpty(quotation.CustomerResponseMessage))
+                        {
+                            <form method="post" asp-page-handler="Respond">
+                                <input type="hidden" name="quotationId" value="@quotation.Id" />
+                                <div class="mb-3">
+                                    <label for="CustomerResponseMessage-@quotation.Id">Would you like to leave a message?</label>
+                                    <textarea name="CustomerResponseMessage" class="form-control" id="CustomerResponseMessage-@quotation.Id"></textarea>
+                                </div>
+                                <button type="submit" name="CustomerResponseStatus" value="Rejected" class="btn btn-primary">Send Message</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">
+                                Your message: @quotation.CustomerResponseMessage
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const quotationRows = document.querySelectorAll('.quotation-row');
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    // Update active button
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const status = this.dataset.status;
+
+                    // Filter rows
+                    quotationRows.forEach(row => {
+                        if (status === 'all' || row.dataset.status === status) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}

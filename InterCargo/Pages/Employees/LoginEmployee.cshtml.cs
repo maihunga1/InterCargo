@@ -57,7 +57,7 @@ public class LoginEmployeeModel : PageModel
         var principal = new ClaimsPrincipal(identity);
         await HttpContext.SignInAsync(principal);
 
-        return RedirectToPage("/Quotations/Submit");
+        return RedirectToPage("/Quotations/Confirm");
     }
 
     private string HashPassword(string password)

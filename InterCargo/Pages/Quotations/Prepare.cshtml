@@ -1,0 +1,206 @@
+@page
+@model InterCargo.Pages.Quotations.PrepareModel
+@{
+    ViewData["Title"] = "Prepare Quotation";
+    var rates20 = new Dictionary<string, decimal> {
+        {"Walf Booking fee", 60},
+        {"Lift on/Lif Off", 80},
+        {"Fumigation", 220},
+        {"LCL Delivery Depot", 400},
+        {"Tailgate Inspection", 120},
+        {"Storafe Fee", 240},
+        {"Facility Fee", 70},
+        {"Walf Inspection", 60}
+    };
+    var rates40 = new Dictionary<string, decimal> {
+        {"Walf Booking fee", 70},
+        {"Lift on/Lif Off", 120},
+        {"Fumigation", 280},
+        {"LCL Delivery Depot", 500},
+        {"Tailgate Inspection", 160},
+        {"Storafe Fee", 300},
+        {"Facility Fee", 100},
+        {"Walf Inspection", 90}
+    };
+    var initialContainerType = Model.SelectedQuotation?.ContainerType ?? Model.Input.ContainerType;
+    var initialNumContainers = Model.SelectedQuotation?.NumberOfContainers ?? Model.Input.NumberOfContainers;
+    var initialDiscount = Model.Input.Discount ?? 0;
+    var initialSelected = Model.SelectedChargeItems ?? new List<string>();
+}
+
+<div class="container mt-4">
+    <h2>Prepare Quotation</h2>
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="alert alert-success">@Model.StatusMessage</div>
+    }
+    @if (Model.SelectedQuotation != null && Model.SelectedUser != null)
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Quotation & Customer Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <h6>Customer Information</h6>
+                        <ul class="list-group mb-2">
+                            <li class="list-group-item"><strong>Full Name:</strong> @Model.SelectedUser.FirstName
+                                @Model.SelectedUser.FamilyName</li>
+                            <li class="list-group-item"><strong>Email:</strong> @Model.SelectedUser.Email</li>
+                            <li class="list-group-item"><strong>Phone Number:</strong> @Model.SelectedUser.PhoneNumber</li>
+                            <li class="list-group-item"><strong>Company:</strong> @Model.SelectedUser.CompanyName</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6>Source</h6>
+                        <p>@Model.SelectedQuotation.Source</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Destination</h6>
+                        <p>@Model.SelectedQuotation.Destination</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6>Number of Containers</h6>
+                        <p>@Model.SelectedQuotation.NumberOfContainers</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Container Type</h6>
+                        <p>@Model.SelectedQuotation.ContainerType</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6>Package Nature</h6>
+                        <p>@Model.SelectedQuotation.PackageNature</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Import/Export Type</h6>
+                        <p>@Model.SelectedQuotation.ImportExportType</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6>Packing/Unpacking</h6>
+                        <p>@Model.SelectedQuotation.PackingUnpacking</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Quarantine Requirements</h6>
+                        <p>@Model.SelectedQuotation.QuarantineRequirements</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <form method="post">
+        <input type="hidden" asp-for="Input.CustomerId" value="@Model.SelectedQuotation.CustomerId" />
+        <input type="hidden" asp-for="Input.Source" value="@Model.SelectedQuotation.Source" />
+        <input type="hidden" asp-for="Input.Destination" value="@Model.SelectedQuotation.Destination" />
+        <input type="hidden" asp-for="Input.NumberOfContainers" value="@Model.SelectedQuotation.NumberOfContainers" />
+        <input type="hidden" asp-for="Input.PackageNature" value="@Model.SelectedQuotation.PackageNature" />
+        <input type="hidden" asp-for="Input.ImportExportType" value="@Model.SelectedQuotation.ImportExportType" />
+        <input type="hidden" asp-for="Input.RequiresPacking" value="@Model.SelectedQuotation.PackingUnpacking.Contains("Packing: Required")" />
+        <input type="hidden" asp-for="Input.RequiresUnpacking" value="@Model.SelectedQuotation.PackingUnpacking.Contains("Unpacking: Required")" />
+        <input type="hidden" asp-for="Input.QuarantineRequirements" value="@Model.SelectedQuotation.QuarantineRequirements" />
+        <input type="hidden" asp-for="Input.ContainerType" value="@Model.SelectedQuotation.ContainerType" />
+        <div class="form-group mb-3">
+            <label>Charge Items (tick to include in quotation):</label>
+            <div id="charge-items-list">
+                @foreach (var item in Model.AllChargeItems)
+                {
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input charge-item-cb" type="checkbox" name="SelectedChargeItems" value="@item"
+                            @(Model.SelectedChargeItems.Contains(item) ? "checked" : "")
+                            id="charge-@item.Replace(" ", "-")">
+                        <label class="form-check-label" for="charge-@item.Replace(" ", "-")">@item</label>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="Input.Discount">Discount (%)</label>
+            <input asp-for="Input.Discount" type="number" step="0.01" class="form-control" id="discount-input" />
+            <span asp-validation-for="Input.Discount" class="text-danger"></span>
+        </div>
+        <div id="breakdown-section">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Quotation Price Breakdown</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Charge Item</th>
+                                <th>Amount (AUD)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="breakdown-body">
+                        </tbody>
+                    </table>
+                    <div class="mt-3">
+                        <strong>Discount:</strong> <span id="discount-val">@(Model.Input.Discount?.ToString("F2") ?? "0")%</span><br />
+                        <strong>Final Price:</strong> <span id="final-price">@Model.FinalPrice.ToString("C")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Approve &amp; Send Quotation</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const rates20 = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(rates20));
+        const rates40 = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(rates40));
+        const initialContainerType = "@initialContainerType";
+        const initialNumContainers = @initialNumContainers;
+        const initialDiscount = @initialDiscount;
+        const initialSelected = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(initialSelected));
+
+        function getRates(containerType) {
+            return containerType === "40Feet" ? rates40 : rates20;
+        }
+
+        function updateBreakdown() {
+            const containerType = initialContainerType;
+            const numContainers = initialNumContainers;
+            const discount = parseFloat(document.getElementById('discount-input').value) || 0;
+            const checked = Array.from(document.querySelectorAll('.charge-item-cb:checked')).map(cb => cb.value);
+            const rates = getRates(containerType);
+            let subtotal = 0;
+            let breakdownHtml = '';
+            checked.forEach(item => {
+                if (rates[item]) {
+                    const val = rates[item] * numContainers;
+                    subtotal += val;
+                    breakdownHtml += `<tr><td>${item}</td><td>${val.toLocaleString('en-AU', { style: 'currency', currency: 'AUD' })}</td></tr>`;
+                }
+            });
+            const gst = subtotal * 0.10;
+            const total = subtotal * 1.10;
+            breakdownHtml += `<tr><td>GST (10%)</td><td>${gst.toLocaleString('en-AU', { style: 'currency', currency: 'AUD' })}</td></tr>`;
+            breakdownHtml += `<tr><td><strong>Total</strong></td><td><strong>${total.toLocaleString('en-AU', { style: 'currency', currency: 'AUD' })}</strong></td></tr>`;
+            let finalPrice = total - (total * (discount / 100));
+            if (finalPrice < 0) finalPrice = 0;
+            document.getElementById('breakdown-body').innerHTML = breakdownHtml;
+            document.getElementById('discount-val').innerText = discount.toFixed(2) + '%';
+            document.getElementById('final-price').innerText = finalPrice.toLocaleString('en-AU', { style: 'currency', currency: 'AUD' });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set initial values
+            document.getElementById('discount-input').value = initialDiscount;
+            updateBreakdown();
+            document.querySelectorAll('.charge-item-cb').forEach(cb => {
+                cb.addEventListener('change', updateBreakdown);
+            });
+            document.getElementById('discount-input').addEventListener('input', updateBreakdown);
+        });
+    </script>
+}

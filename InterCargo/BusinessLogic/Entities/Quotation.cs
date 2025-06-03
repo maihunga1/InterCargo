@@ -32,13 +32,25 @@ namespace InterCargo.BusinessLogic.Entities
         [Required(ErrorMessage = "Quarantine requirements are required")]
         public string QuarantineRequirements { get; set; }
 
+        [Required(ErrorMessage = "Container type is required")]
+        public string ContainerType { get; set; }
+
         [Required]
         public string Status { get; set; }
 
         [Required]
         public string Message { get; set; }
 
+        public string? CustomerResponseStatus { get; set; }
+
+        public string? CustomerResponseMessage { get; set; }
+
         [Required]
         public DateTime DateIssued { get; set; }
+
+        public decimal? Discount { get; set; } // Discount in AUD or percentage
+        public decimal? FinalPrice { get; set; } // Final price after discount
+
+        public string? SelectedChargeItemsJson { get; set; } // JSON string of selected charge items
     }
 }

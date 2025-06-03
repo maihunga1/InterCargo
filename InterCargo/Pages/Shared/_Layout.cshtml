@@ -28,9 +28,15 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Users/Dashboard">Dashboard</a>
+                            </li>
+                        }
                     </ul>
                     <ul class="navbar-nav">
-                        @if (User.Identity.IsAuthenticated && Context.Request.Path.StartsWithSegments("/Quotations"))
+                        @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-danger" asp-area="" asp-page="/Users/Logout">Logout</a>

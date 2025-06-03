@@ -27,6 +27,8 @@ namespace InterCargo.Pages.Quotations
 
         public string RequestId { get; set; }
 
+        public Dictionary<string, decimal> PriceBreakdown { get; set; } = new();
+
         public IActionResult OnGet()
         {
             if (!User.Identity.IsAuthenticated)
@@ -34,6 +36,10 @@ namespace InterCargo.Pages.Quotations
                 return RedirectToPage("/Account/Login", new { returnUrl = Url.Page("/Quotations/Submit") });
             }
             RequestId = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
+            if (!string.IsNullOrEmpty(Input.ContainerType) && Input.NumberOfContainers > 0)
+            {
+                PriceBreakdown = _quotationService.GetRateBreakdown(Input.ContainerType, Input.NumberOfContainers);
+            }
             return Page();
         }
 
@@ -46,6 +52,10 @@ namespace InterCargo.Pages.Quotations
 
             if (!ModelState.IsValid)
             {
+                if (!string.IsNullOrEmpty(Input.ContainerType) && Input.NumberOfContainers > 0)
+                {
+                    PriceBreakdown = _quotationService.GetRateBreakdown(Input.ContainerType, Input.NumberOfContainers);
+                }
                 _logger.LogWarning("Model state is invalid: {ValidationErrors}",
                     string.Join(", ", ModelState.Values
                         .SelectMany(v => v.Errors)
@@ -79,7 +89,9 @@ namespace InterCargo.Pages.Quotations
                     QuarantineRequirements = Input.QuarantineRequirements,
                     Status = "Pending",
                     Message = "New quotation request from customer",
-                    DateIssued = DateTime.UtcNow
+                    CustomerResponseStatus = "Pending",
+                    DateIssued = DateTime.UtcNow,
+                    ContainerType = Input.ContainerType
                 };
 
                 _logger.LogInformation("Preparing to save quotation: {QuotationDetails}",
@@ -96,6 +108,7 @@ namespace InterCargo.Pages.Quotations
                 _logger.LogInformation("Quotation saved successfully with status: {Status}", quotation.Status);
 
                 StatusMessage = "Quotation submitted successfully!";
+                PriceBreakdown = _quotationService.GetRateBreakdown(Input.ContainerType, Input.NumberOfContainers);
                 return Page();
             }
             catch (Exception ex)
@@ -134,6 +147,9 @@ namespace InterCargo.Pages.Quotations
             [Required(ErrorMessage = "Quarantine requirements are required")]
             [Display(Name = "Quarantine Requirements")]
             public string QuarantineRequirements { get; set; }
+
+            [Required(ErrorMessage = "Container type is required")]
+            public string ContainerType { get; set; } // '20Feet' or '40Feet'
         }
     }
 }

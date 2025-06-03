@@ -3,6 +3,7 @@ using System;
 using InterCargo.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InterCargo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250602033715_AddedContainerType")]
+    partial class AddedContainerType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.4");
@@ -76,23 +79,11 @@ namespace InterCargo.Migrations
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("CustomerResponseMessage")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CustomerResponseStatus")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("DateIssued")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Destination")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal?>("Discount")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal?>("FinalPrice")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ImportExportType")
@@ -116,9 +107,6 @@ namespace InterCargo.Migrations
 
                     b.Property<string>("QuarantineRequirements")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SelectedChargeItemsJson")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Source")
