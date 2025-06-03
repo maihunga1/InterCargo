@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
+// NOT Test file
+
 namespace InterCargo.BusinessLogic.Entities
 {
     public enum JobType

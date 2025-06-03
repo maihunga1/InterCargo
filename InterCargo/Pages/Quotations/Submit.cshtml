@@ -5,10 +5,10 @@
 }
 
 <div class="container">
-    <h2 class="mb-4">Submit Quotation Request</h2>
-    <div class="text-muted">
-        Request ID: <strong>@Model.Quotation.Id</strong>
-    </div>
+    <h2 class="mb-4 d-flex justify-content-between align-items-center">
+        Submit Quotation Form
+        <span class="text-muted" style="font-size: 1rem;">Request ID: <strong>@Model.RequestId</strong></span>
+    </h2>
 
     @if (!string.IsNullOrEmpty(Model.StatusMessage))
     {
@@ -112,7 +112,7 @@
             </div>
         </div>
 
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
             <button type="submit" class="btn btn-primary">Submit Quotation Request</button>
         </div>
     </form>

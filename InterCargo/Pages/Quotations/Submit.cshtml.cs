@@ -33,6 +33,7 @@ namespace InterCargo.Pages.Quotations
         public string CustomerName { get; set; }
         public string CustomerEmail { get; set; }
         public string CustomerCompany { get; set; }
+        public string RequestId { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -65,6 +66,8 @@ namespace InterCargo.Pages.Quotations
                 CustomerCompany = "Not available";
             }
 
+            RequestId = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
+            
             Quotation = new Quotation
             {
                 Id = Guid.NewGuid(),
