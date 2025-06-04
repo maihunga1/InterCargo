@@ -68,8 +68,9 @@ namespace InterCargo.Pages.Users
                 // Save to database
                 _userAppService.AddUser(user);
 
-                SuccessMessage = "Registration successful!";
+                SuccessMessage = "Registration successful! You will be redirected to the login page in 3 seconds...";
                 ModelState.Clear();
+                Input = new RegisterInputModel(); // Clear the form
                 return Page();
             }
             catch (Exception ex)

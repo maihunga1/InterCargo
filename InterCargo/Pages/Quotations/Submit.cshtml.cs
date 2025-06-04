@@ -11,29 +11,71 @@ namespace InterCargo.Pages.Quotations
     public class SubmitModel : PageModel
     {
         private readonly IQuotationAppService _quotationService;
+        private readonly IUserAppService _userService;
         private readonly ILogger<SubmitModel> _logger;
 
-        public SubmitModel(IQuotationAppService quotationService, ILogger<SubmitModel> logger)
+        public SubmitModel(
+            IQuotationAppService quotationService, 
+            IUserAppService userService,
+            ILogger<SubmitModel> logger)
         {
             _quotationService = quotationService;
+            _userService = userService;
             _logger = logger;
         }
 
         [BindProperty]
-        public SubmitInputModel Input { get; set; } = new SubmitInputModel();
+        public Quotation Quotation { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
 
+        public string CustomerName { get; set; }
+        public string CustomerEmail { get; set; }
+        public string CustomerCompany { get; set; }
         public string RequestId { get; set; }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return RedirectToPage("/Account/Login", new { returnUrl = Url.Page("/Quotations/Submit") });
+                return RedirectToPage("/Users/LoginUser", new { returnUrl = Url.Page("/Quotations/Submit") });
             }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToPage("/Users/LoginUser");
+            }
+
+            try
+            {
+                var user = await _userService.GetUserByIdAsync(Guid.Parse(userId));
+                if (user != null)
+                {
+                    CustomerName = $"{user.FirstName} {user.FamilyName}";
+                    CustomerEmail = user.Email;
+                    CustomerCompany = user.CompanyName;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving user information");
+                CustomerName = "Not available";
+                CustomerEmail = "Not available";
+                CustomerCompany = "Not available";
+            }
+
             RequestId = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
+            
+            Quotation = new Quotation
+            {
+                Id = Guid.NewGuid(),
+                CustomerId = Guid.Parse(userId),
+                DateIssued = DateTime.UtcNow,
+                Status = "Pending",
+                Message = "New quotation request"
+            };
             return Page();
         }
 
@@ -41,7 +83,7 @@ namespace InterCargo.Pages.Quotations
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return RedirectToPage("/Account/Login", new { returnUrl = Url.Page("/Quotations/Submit") });
+                return RedirectToPage("/Users/LoginUser", new { returnUrl = Url.Page("/Quotations/Submit") });
             }
 
             if (!ModelState.IsValid)
@@ -50,6 +92,18 @@ namespace InterCargo.Pages.Quotations
                     string.Join(", ", ModelState.Values
                         .SelectMany(v => v.Errors)
                         .Select(e => e.ErrorMessage)));
+
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    var user = await _userService.GetUserByIdAsync(Guid.Parse(userId));
+                    if (user != null)
+                    {
+                        CustomerName = $"{user.FirstName} {user.FamilyName}";
+                        CustomerEmail = user.Email;
+                        CustomerCompany = user.CompanyName;
+                    }
+                }
                 return Page();
             }
 
@@ -65,38 +119,28 @@ namespace InterCargo.Pages.Quotations
                     return Page();
                 }
 
-                var quotation = new Quotation
-                {
-                    Id = Guid.NewGuid(),
-                    CustomerId = Guid.Parse(userId),
-                    Source = Input.Source,
-                    Destination = Input.Destination,
-                    NumberOfContainers = Input.NumberOfContainers,
-                    PackageNature = Input.PackageNature,
-                    ImportExportType = Input.ImportExportType,
-                    PackingUnpacking = $"Packing: {(Input.RequiresPacking ? "Required" : "Not Required")}, " +
-                                     $"Unpacking: {(Input.RequiresUnpacking ? "Required" : "Not Required")}",
-                    QuarantineRequirements = Input.QuarantineRequirements,
-                    Status = "Pending",
-                    Message = "New quotation request from customer",
-                    DateIssued = DateTime.UtcNow
-                };
+                Quotation.CustomerId = Guid.Parse(userId);
+                Quotation.Status = "Pending";
+                Quotation.Message = "New quotation request from customer";
+                Quotation.DateIssued = DateTime.UtcNow;
 
                 _logger.LogInformation("Preparing to save quotation: {QuotationDetails}",
-                    $"ID: {quotation.Id}, " +
-                    $"CustomerId: {quotation.CustomerId}, " +
-                    $"Source: {quotation.Source}, " +
-                    $"Destination: {quotation.Destination}, " +
-                    $"Containers: {quotation.NumberOfContainers}, " +
-                    $"Import/Export: {quotation.ImportExportType}, " +
-                    $"Packing/Unpacking: {quotation.PackingUnpacking}, " +
-                    $"Status: {quotation.Status}");
+                    $"ID: {Quotation.Id}, " +
+                    $"CustomerId: {Quotation.CustomerId}, " +
+                    $"Source: {Quotation.Source}, " +
+                    $"Destination: {Quotation.Destination}, " +
+                    $"Containers: {Quotation.NumberOfContainers}, " +
+                    $"JobType: {Quotation.JobType}, " +
+                    $"RequiresPacking: {Quotation.RequiresPacking}, " +
+                    $"RequiresUnpacking: {Quotation.RequiresUnpacking}, " +
+                    $"RequiresQuarantine: {Quotation.RequiresQuarantine}, " +
+                    $"Status: {Quotation.Status}");
 
-                await _quotationService.AddQuotationAsync(quotation);
-                _logger.LogInformation("Quotation saved successfully with status: {Status}", quotation.Status);
+                await _quotationService.AddQuotationAsync(Quotation);
+                _logger.LogInformation("Quotation saved successfully with ID: {QuotationId}", Quotation.Id);
 
-                StatusMessage = "Quotation submitted successfully!";
-                return Page();
+                StatusMessage = "Quotation request submitted successfully! Your request ID is: " + Quotation.Id;
+                return RedirectToPage("./Confirmation", new { id = Quotation.Id });
             }
             catch (Exception ex)
             {
@@ -106,34 +150,5 @@ namespace InterCargo.Pages.Quotations
             }
         }
 
-        public class SubmitInputModel
-        {
-            [Required(ErrorMessage = "Source is required")]
-            public string Source { get; set; }
-
-            [Required(ErrorMessage = "Destination is required")]
-            public string Destination { get; set; }
-
-            [Required(ErrorMessage = "Number of containers is required")]
-            [Range(1, int.MaxValue, ErrorMessage = "Number of containers must be at least 1")]
-            public int NumberOfContainers { get; set; }
-
-            [Required(ErrorMessage = "Package nature is required")]
-            public string PackageNature { get; set; }
-
-            [Required(ErrorMessage = "Import/Export type is required")]
-            [Display(Name = "Import/Export Type")]
-            public string ImportExportType { get; set; }
-
-            [Display(Name = "Requires Packing")]
-            public bool RequiresPacking { get; set; }
-
-            [Display(Name = "Requires Unpacking")]
-            public bool RequiresUnpacking { get; set; }
-
-            [Required(ErrorMessage = "Quarantine requirements are required")]
-            [Display(Name = "Quarantine Requirements")]
-            public string QuarantineRequirements { get; set; }
-        }
     }
 }
