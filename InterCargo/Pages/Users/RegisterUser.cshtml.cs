@@ -76,8 +76,6 @@ namespace InterCargo.Pages.Users
             catch (Exception ex)
             {
                 ErrorMessage = "An error occurred during registration. Please try again.";
-                // Log the exception details
-                Console.WriteLine(ex.Message);
                 return Page();
             }
         }

@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using InterCargo.BusinessLogic.Entities;
 
 namespace InterCargo.Pages.Quotations.Models;
@@ -6,82 +5,65 @@ namespace InterCargo.Pages.Quotations.Models;
 public class QuotationViewModel
 {
     public Guid Id { get; set; }
-    public Guid CustomerId { get; set; }
-
-    [Required]
-    [Display(Name = "Source Location")]
+    public string CustomerId { get; set; }
     public string Source { get; set; }
-
-    [Required]
-    [Display(Name = "Destination Location")]
     public string Destination { get; set; }
-
-    [Required]
-    [Range(1, int.MaxValue, ErrorMessage = "Number of containers must be at least 1")]
-    [Display(Name = "Number of Containers")]
     public int NumberOfContainers { get; set; }
-
-    [Required]
-    [Display(Name = "Nature of Package")]
     public string PackageNature { get; set; }
-    [Required]
-    [Display(Name = "Job Type")]
-    public JobType JobType { get; set; }
-
-    [Display(Name = "Requires Packing")]
-    public bool RequiresPacking { get; set; }
-
-    [Display(Name = "Requires Unpacking")]
-    public bool RequiresUnpacking { get; set; }
-
-    [Display(Name = "Requires Quarantine")]
-    public bool RequiresQuarantine { get; set; }
-
-    [Display(Name = "Additional Job Details")]
-    public string AdditionalJobDetails { get; set; }
+    public string ImportExportType { get; set; }
+    public string PackingUnpacking { get; set; }
+    public string QuarantineRequirements { get; set; }
     public string Status { get; set; }
     public string Message { get; set; }
     public DateTime DateIssued { get; set; }
+    public string ContainerType { get; set; } // '20Feet' or '40Feet'
+    public decimal? Discount { get; set; }
+    public decimal? FinalPrice { get; set; }
+}
+
+public static class QuotationViewModelExtensions
+{
+    public static Quotation ToEntity(this QuotationViewModel model)
+    {
+        return new Quotation
+        {
+            Id = model.Id,
+            CustomerId = Guid.Parse(model.CustomerId),
+            Source = model.Source,
+            Destination = model.Destination,
+            NumberOfContainers = model.NumberOfContainers,
+            PackageNature = model.PackageNature,
+            ImportExportType = model.ImportExportType,
+            PackingUnpacking = model.PackingUnpacking,
+            QuarantineRequirements = model.QuarantineRequirements,
+            Status = model.Status,
+            Message = model.Message,
+            DateIssued = model.DateIssued,
+            ContainerType = model.ContainerType,
+            Discount = model.Discount,
+            FinalPrice = model.FinalPrice
+        };
+    }
 
     public static QuotationViewModel FromEntity(Quotation entity)
     {
         return new QuotationViewModel
         {
             Id = entity.Id,
-            CustomerId = entity.CustomerId,
+            CustomerId = entity.CustomerId.ToString(),
             Source = entity.Source,
             Destination = entity.Destination,
             NumberOfContainers = entity.NumberOfContainers,
             PackageNature = entity.PackageNature,
-            JobType = entity.JobType,
-            RequiresPacking = entity.RequiresPacking,
-            RequiresUnpacking = entity.RequiresUnpacking,
-            RequiresQuarantine = entity.RequiresQuarantine,
-            AdditionalJobDetails = entity.AdditionalJobDetails,
+            ImportExportType = entity.ImportExportType,
+            PackingUnpacking = entity.PackingUnpacking,
+            QuarantineRequirements = entity.QuarantineRequirements,
             Status = entity.Status,
             Message = entity.Message,
-            DateIssued = entity.DateIssued
-        };
-    }
-
-    public Quotation ToEntity()
-    {
-        return new Quotation
-        {
-            Id = Id,
-            CustomerId = CustomerId,
-            Source = Source,
-            Destination = Destination,
-            NumberOfContainers = NumberOfContainers,
-            PackageNature = PackageNature,
-            JobType = JobType,
-            RequiresPacking = RequiresPacking,
-            RequiresUnpacking = RequiresUnpacking,
-            RequiresQuarantine = RequiresQuarantine,
-            AdditionalJobDetails = AdditionalJobDetails,
-            Status = Status,
-            Message = Message,
-            DateIssued = DateIssued
+            DateIssued = entity.DateIssued,
+            ContainerType = entity.ContainerType,
+            Discount = entity.Discount,
+            FinalPrice = entity.FinalPrice
         };
     }
 }

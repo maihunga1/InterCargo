@@ -69,7 +69,17 @@ namespace InterCargo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ContainerType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("CustomerId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CustomerResponseMessage")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CustomerResponseStatus")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DateIssued")
@@ -77,6 +87,12 @@ namespace InterCargo.Migrations
 
                     b.Property<string>("Destination")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("Discount")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("FinalPrice")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ImportExportType")
@@ -100,6 +116,9 @@ namespace InterCargo.Migrations
 
                     b.Property<string>("QuarantineRequirements")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SelectedChargeItemsJson")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Source")

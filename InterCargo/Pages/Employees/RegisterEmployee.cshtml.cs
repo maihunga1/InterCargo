@@ -38,14 +38,12 @@ namespace InterCargo.Pages.Employees
             try
             {
                 // Check if username or email already exists
-                Console.WriteLine("here2");
                 if (_employeeAppService.GetAllEmployees().Any(e => e.Username == Input.Username))
                 {
                     ModelState.AddModelError("Input.Username", "Username is already taken.");
                     return Page();
                 }
 
-                Console.WriteLine("here3");
                 if (_employeeAppService.GetAllEmployees().Any(e => e.Email == Input.Email))
                 {
                     ModelState.AddModelError("Input.Email", "Email is already registered.");
@@ -67,8 +65,6 @@ namespace InterCargo.Pages.Employees
                     Address = Input.Address
                 };
 
-                Console.WriteLine("here");
-
                 // Save to database
                 _employeeAppService.AddEmployee(employee);
 
@@ -79,7 +75,6 @@ namespace InterCargo.Pages.Employees
             catch (Exception ex)
             {
                 ErrorMessage = "An error occurred during registration. Please try again.";
-                Console.WriteLine(ex.Message);
                 return Page();
             }
         }

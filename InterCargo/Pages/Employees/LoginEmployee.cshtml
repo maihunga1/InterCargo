@@ -1,0 +1,40 @@
+@page
+@model InterCargo.Pages.Employees.LoginEmployeeModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
+}
+
+<h1>Login</h1>
+
+<form method="post">
+    <div>
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <div class="alert alert-success">
+                @Model.SuccessMessage
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">
+                @Model.ErrorMessage
+            </div>
+        }
+
+        <div class="form-group">
+            <label asp-for="Input.Username">Username</label>
+            <input asp-for="Input.Username" class="form-control" />
+            <span asp-validation-for="Input.Username" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Input.Password">Password</label>
+            <input asp-for="Input.Password" type="password" class="form-control" autocomplete="current-password" />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Login</button>
+    </div>
+</form>

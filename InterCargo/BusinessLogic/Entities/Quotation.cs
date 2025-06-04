@@ -1,15 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-// NOT Test file
-
 namespace InterCargo.BusinessLogic.Entities
 {
-    public enum JobType
-    {
-        Import,
-        Export
-    }
-
     public class Quotation
     {
         [Key]
@@ -18,49 +10,47 @@ namespace InterCargo.BusinessLogic.Entities
         [Required]
         public Guid CustomerId { get; set; }
 
-        [Required(ErrorMessage = "Source location is required")]
-        [Display(Name = "Source Location")]
+        [Required(ErrorMessage = "Source is required")]
         public string Source { get; set; }
 
-        [Required(ErrorMessage = "Destination location is required")]
-        [Display(Name = "Destination Location")]
+        [Required(ErrorMessage = "Destination is required")]
         public string Destination { get; set; }
 
         [Required(ErrorMessage = "Number of containers is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Number of containers must be at least 1")]
-        [Display(Name = "Number of Containers")]
         public int NumberOfContainers { get; set; }
 
-        [Required(ErrorMessage = "Nature of package is required")]
-        [Display(Name = "Nature of Package")]
+        [Required(ErrorMessage = "Package nature is required")]
         public string PackageNature { get; set; }
 
-        [Required(ErrorMessage = "Job type is required")]
-        [Display(Name = "Job Type")]
-        public JobType JobType { get; set; }
+        [Required(ErrorMessage = "Import/Export type is required")]
+        public string ImportExportType { get; set; }
+
+        [Required(ErrorMessage = "Packing/Unpacking details are required")]
+        public string PackingUnpacking { get; set; }
+
+        [Required(ErrorMessage = "Quarantine requirements are required")]
+        public string QuarantineRequirements { get; set; }
+
+        [Required(ErrorMessage = "Container type is required")]
+        public string ContainerType { get; set; }
 
         [Required]
-        [Display(Name = "Requires Packing")]
-        public bool RequiresPacking { get; set; }
-
-        [Required]
-        [Display(Name = "Requires Unpacking")]
-        public bool RequiresUnpacking { get; set; }
-
-        [Required]
-        [Display(Name = "Requires Quarantine")]
-        public bool RequiresQuarantine { get; set; }
-
-        [Display(Name = "Additional Job Details")]
-        public string AdditionalJobDetails { get; set; }
-
-        [Required]
-        public string Status { get; set; } = "Pending";
+        public string Status { get; set; }
 
         [Required]
         public string Message { get; set; }
 
+        public string? CustomerResponseStatus { get; set; }
+
+        public string? CustomerResponseMessage { get; set; }
+
         [Required]
-        public DateTime DateIssued { get; set; } = DateTime.UtcNow;
+        public DateTime DateIssued { get; set; }
+
+        public decimal? Discount { get; set; } // Discount in AUD or percentage
+        public decimal? FinalPrice { get; set; } // Final price after discount
+
+        public string? SelectedChargeItemsJson { get; set; } // JSON string of selected charge items
     }
 }

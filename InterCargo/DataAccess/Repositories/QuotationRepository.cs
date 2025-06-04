@@ -13,6 +13,11 @@ public class QuotationRepository : IQuotationRepository
         _context = context;
     }
 
+    public async Task<List<Quotation>> GetAllQuotationsAsync()
+    {
+        return await _context.Quotations.ToListAsync();
+    }
+
     public async Task AddQuotationAsync(Quotation quotation)
     {
         _context.Quotations.Add(quotation);
@@ -29,6 +34,19 @@ public class QuotationRepository : IQuotationRepository
     public async Task<Quotation?> GetQuotationByIdAsync(Guid id)
     {
         return await _context.Quotations.FindAsync(id);
+    }
+
+    public async Task<List<Quotation>> GetPendingQuotationsAsync()
+    {
+        return await _context.Quotations
+            .Where(q => q.Status == "Pending")
+            .ToListAsync();
+    }
+
+    public async Task UpdateQuotationAsync(Quotation quotation)
+    {
+        _context.Quotations.Update(quotation);
+        await _context.SaveChangesAsync();
     }
 }
 

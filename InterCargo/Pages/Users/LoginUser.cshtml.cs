@@ -57,7 +57,7 @@ namespace InterCargo.Pages.Users
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(principal);
 
-            return RedirectToPage("/Quotations/Submit");
+            return RedirectToPage("/Users/Dashboard");
         }
 
         private string HashPassword(string password)
