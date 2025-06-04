@@ -3115,11 +3115,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/qhungmai/Documents/Interport-Cargo/InterCargo/Interport-Cargo.csproj",
+      "projectUniqueName": "/Users/qhungmai/Documents/GitHub/InterCargo/InterCargo/Interport-Cargo.csproj",
       "projectName": "Interport-Cargo",
-      "projectPath": "/Users/qhungmai/Documents/Interport-Cargo/InterCargo/Interport-Cargo.csproj",
+      "projectPath": "/Users/qhungmai/Documents/GitHub/InterCargo/InterCargo/Interport-Cargo.csproj",
       "packagesPath": "/Users/qhungmai/.nuget/packages/",
-      "outputPath": "/Users/qhungmai/Documents/Interport-Cargo/InterCargo/obj/",
+      "outputPath": "/Users/qhungmai/Documents/GitHub/InterCargo/InterCargo/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/qhungmai/.nuget/NuGet/NuGet.Config"
