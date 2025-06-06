@@ -226,3 +226,4 @@
 /Users/qhungmai/Documents/GitHub/InterCargo/InterCargo/obj/Debug/net9.0/Interport-Cargo.pdb
 /Users/qhungmai/Documents/GitHub/InterCargo/InterCargo/obj/Debug/net9.0/Interport-Cargo.genruntimeconfig.cache
 /Users/qhungmai/Documents/GitHub/InterCargo/InterCargo/obj/Debug/net9.0/ref/Interport-Cargo.dll
+/Users/qhungmai/Documents/GitHub/InterCargo/InterCargo/bin/Debug/net9.0/BCrypt.Net-Next.dll
