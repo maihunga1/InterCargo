@@ -1,6 +1,7 @@
 using InterCargo.BusinessLogic.Interfaces;
 using InterCargo.BusinessLogic.Entities;
 using InterCargo.DataAccess.Interfaces;
+using BCrypt.Net;
 
 namespace InterCargo.BusinessLogic.Services
 {
@@ -43,14 +44,13 @@ namespace InterCargo.BusinessLogic.Services
             return await _userRepository.DeleteAsync(id);
         }
 
-        public async Task<bool> ValidateUserCredentialsAsync(string email, string password)
+        public async Task<bool> ValidateUserCredentialsAsync(string username, string password)
         {
-            var user = await _userRepository.GetByEmailAsync(email);
+            var user = await _userRepository.GetByUsernameAsync(username);
             if (user == null)
                 return false;
 
-            // In a real application, you would use proper password hashing
-            return user.Password == password;
+            return BCrypt.Net.BCrypt.Verify(password, user.Password);
         }
     }
-} 
+}

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Interport-Cargo")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+92b8a42e393875c9e5a2f5405fc54890bbba4249")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+402a5fd22342642c0d360e45963703f13680bbf6")]
 [assembly: System.Reflection.AssemblyProductAttribute("Interport-Cargo")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Interport-Cargo")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

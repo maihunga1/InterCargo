@@ -1,0 +1,30 @@
+# .NET build artifacts
+bin/
+obj/
+*.dll
+*.pdb
+*.cache
+*.json
+!appsettings.json
+!appsettings.*.json
+
+# Visual Studio files
+.vs/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# Rider
+.idea/
+*.sln.iml
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini 
