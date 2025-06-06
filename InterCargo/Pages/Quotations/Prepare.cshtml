@@ -29,7 +29,7 @@
 }
 
 <div class="container mt-4">
-    <h2>Prepare Quotation - @Model.RequestId</h2>
+    <h2>Prepare Quotation - @(Model.SelectedQuotation?.Id.ToString("N").Substring(0, 8).ToUpper())</h2>
     @if (!string.IsNullOrEmpty(Model.StatusMessage))
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">

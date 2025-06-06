@@ -229,6 +229,7 @@
 <<<<<<< HEAD
 /Users/qhungmai/Documents/GitHub/InterCargo/InterCargo/bin/Debug/net9.0/BCrypt.Net-Next.dll
 =======
+>>>>>>> main
 /Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/bin/Debug/net9.0/appsettings.Development.json
 /Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/bin/Debug/net9.0/appsettings.json
 /Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/bin/Debug/net9.0/net9.0/appsettings.Development.json
@@ -244,6 +245,7 @@
 /Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/bin/Debug/net9.0/Interport-Cargo.runtimeconfig.json
 /Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/bin/Debug/net9.0/Interport-Cargo.dll
 /Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/bin/Debug/net9.0/Interport-Cargo.pdb
+/Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/bin/Debug/net9.0/BCrypt.Net-Next.dll
 /Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/bin/Debug/net9.0/Humanizer.dll
 /Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/bin/Debug/net9.0/Microsoft.Bcl.AsyncInterfaces.dll
 /Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/bin/Debug/net9.0/Microsoft.Build.Locator.dll
@@ -456,4 +458,3 @@
 /Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/obj/Debug/net9.0/Interport-Cargo.pdb
 /Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/obj/Debug/net9.0/Interport-Cargo.genruntimeconfig.cache
 /Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/obj/Debug/net9.0/ref/Interport-Cargo.dll
->>>>>>> main

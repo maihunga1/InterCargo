@@ -45,14 +45,14 @@ namespace InterCargo.Pages.Quotations
         [BindProperty]
         public Guid QuotationId { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string id)
+        public async Task<IActionResult> OnGetAsync(string quotationId)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(quotationId))
             {
                 return NotFound();
             }
 
-            var quotation = await _quotationService.GetQuotationByIdAsync(Guid.Parse(id));
+            var quotation = await _quotationService.GetQuotationByIdAsync(Guid.Parse(quotationId));
             if (quotation == null)
             {
                 return NotFound();
@@ -64,21 +64,21 @@ namespace InterCargo.Pages.Quotations
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(string id, string status, string message)
+        public async Task<IActionResult> OnPostAsync(string quotationId, string status, string message)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(quotationId))
             {
                 return NotFound();
             }
 
-            var quotation = await _quotationService.GetQuotationByIdAsync(Guid.Parse(id));
+            var quotation = await _quotationService.GetQuotationByIdAsync(Guid.Parse(quotationId));
             if (quotation == null)
             {
                 return NotFound();
             }
 
-            quotation.Status = status;
-            quotation.Message = message;
+            quotation.Status = status ?? "Approved";
+            quotation.Message = message ?? $"Quotation {quotation.Id.ToString("N").Substring(0, 8).ToUpper()} has been approved";
             await _quotationService.UpdateQuotationAsync(quotation);
 
             SelectedQuotation = quotation;
