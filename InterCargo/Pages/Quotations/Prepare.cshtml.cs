@@ -84,7 +84,7 @@ namespace InterCargo.Pages.Quotations
             SelectedQuotation = quotation;
             SelectedUser = await _userAppService.GetUserById(quotation.CustomerId);
 
-            return RedirectToPage("/Quotations/List");
+            return RedirectToPage("/Quotations/Confirm");
         }
 
         public Dictionary<string, decimal> GetCustomRateBreakdown(string containerType, int numberOfContainers, List<string> selectedItems)
