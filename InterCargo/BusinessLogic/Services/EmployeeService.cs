@@ -42,5 +42,10 @@ public class EmployeeService : IEmployeeService
     {
         return await _employeeRepository.GetEmployeeByUsername(username);
     }
+
+    public async Task<Employee> GetEmployeeByEmail(string email)
+    {
+        return await _employeeRepository.GetEmployeeByEmail(email);
+    }
 }
 

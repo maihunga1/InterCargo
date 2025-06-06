@@ -11,11 +11,13 @@ namespace InterCargo.Pages.Quotations
     {
         private readonly IQuotationAppService _quotationService;
         private readonly IUserAppService _userAppService;
+        private readonly ILogger<PrepareModel> _logger;
 
-        public PrepareModel(IQuotationAppService quotationService, IUserAppService userAppService)
+        public PrepareModel(IQuotationAppService quotationService, IUserAppService userAppService, ILogger<PrepareModel> logger)
         {
             _quotationService = quotationService;
             _userAppService = userAppService;
+            _logger = logger;
         }
 
         [BindProperty]
@@ -38,85 +40,51 @@ namespace InterCargo.Pages.Quotations
         public List<string> SelectedChargeItems { get; set; } = new();
         public Quotation SelectedQuotation { get; set; }
         public User SelectedUser { get; set; }
+        [BindProperty]
+        public string RequestId { get; set; }
+        [BindProperty]
+        public Guid QuotationId { get; set; }
 
-        public void OnGet(Guid? quotationId = null)
+        public async Task<IActionResult> OnGetAsync(string id)
         {
-            Customers = _userAppService.GetAllUsers();
-            if (quotationId.HasValue)
+            if (string.IsNullOrEmpty(id))
             {
-                SelectedQuotation = _quotationService.GetQuotationByIdAsync(quotationId.Value).Result;
-                if (SelectedQuotation != null)
-                {
-                    SelectedUser = _userAppService.GetUserById(SelectedQuotation.CustomerId);
-                    // Pre-fill form fields
-                    Input = new PrepareInputModel
-                    {
-                        CustomerId = SelectedQuotation.CustomerId.ToString(),
-                        Source = SelectedQuotation.Source,
-                        Destination = SelectedQuotation.Destination,
-                        NumberOfContainers = SelectedQuotation.NumberOfContainers,
-                        PackageNature = SelectedQuotation.PackageNature,
-                        ImportExportType = SelectedQuotation.ImportExportType,
-                        RequiresPacking = SelectedQuotation.PackingUnpacking.Contains("Packing: Required"),
-                        RequiresUnpacking = SelectedQuotation.PackingUnpacking.Contains("Unpacking: Required"),
-                        QuarantineRequirements = SelectedQuotation.QuarantineRequirements,
-                        ContainerType = SelectedQuotation.ContainerType,
-                        Discount = SelectedQuotation.Discount
-                    };
-                    if (!string.IsNullOrEmpty(SelectedQuotation.SelectedChargeItemsJson))
-                    {
-                        SelectedChargeItems = JsonSerializer.Deserialize<List<string>>(SelectedQuotation.SelectedChargeItemsJson) ?? new List<string>();
-                    }
-                }
+                return NotFound();
             }
-            if (SelectedChargeItems == null || SelectedChargeItems.Count == 0)
+
+            var quotation = await _quotationService.GetQuotationByIdAsync(Guid.Parse(id));
+            if (quotation == null)
             {
-                SelectedChargeItems = new List<string>(AllChargeItems);
+                return NotFound();
             }
-            if (!string.IsNullOrEmpty(Input.ContainerType) && Input.NumberOfContainers > 0)
-            {
-                PriceBreakdown = GetCustomRateBreakdown(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems);
-                FinalPrice = CalculateFinalPriceWithPercentage(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems, Input.Discount);
-            }
+
+            SelectedQuotation = quotation;
+            SelectedUser = await _userAppService.GetUserById(quotation.CustomerId);
+            
+            return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string id, string status, string message)
         {
-            Customers = _userAppService.GetAllUsers();
-            if (!ModelState.IsValid)
+            if (string.IsNullOrEmpty(id))
             {
-                if (!string.IsNullOrEmpty(Input.ContainerType) && Input.NumberOfContainers > 0)
-                {
-                    PriceBreakdown = GetCustomRateBreakdown(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems);
-                    FinalPrice = CalculateFinalPriceWithPercentage(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems, Input.Discount);
-                }
-                return Page();
+                return NotFound();
             }
 
-            var quotation = new Quotation
+            var quotation = await _quotationService.GetQuotationByIdAsync(Guid.Parse(id));
+            if (quotation == null)
             {
-                Id = Guid.NewGuid(),
-                CustomerId = Guid.Parse(Input.CustomerId),
-                Source = Input.Source,
-                Destination = Input.Destination,
-                NumberOfContainers = Input.NumberOfContainers,
-                PackageNature = Input.PackageNature,
-                ImportExportType = Input.ImportExportType,
-                PackingUnpacking = $"Packing: {(Input.RequiresPacking ? "Required" : "Not Required")}, " +
-                                 $"Unpacking: {(Input.RequiresUnpacking ? "Required" : "Not Required")}",
-                QuarantineRequirements = Input.QuarantineRequirements,
-                Status = "Approved",
-                Message = "Quotation approved and prepared by employee",
-                DateIssued = DateTime.UtcNow,
-                ContainerType = Input.ContainerType,
-                Discount = Input.Discount,
-                FinalPrice = CalculateFinalPriceWithPercentage(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems, Input.Discount),
-                SelectedChargeItemsJson = JsonSerializer.Serialize(SelectedChargeItems)
-            };
+                return NotFound();
+            }
 
-            await _quotationService.AddQuotationAsync(quotation);
-            StatusMessage = "Quotation submitted successfully!";
-            return RedirectToPage("/Quotations/Confirm");
+            quotation.Status = status;
+            quotation.Message = message;
+            await _quotationService.UpdateQuotationAsync(quotation);
+
+            SelectedQuotation = quotation;
+            SelectedUser = await _userAppService.GetUserById(quotation.CustomerId);
+
+            return RedirectToPage("/Quotations/List");
         }
 
         public Dictionary<string, decimal> GetCustomRateBreakdown(string containerType, int numberOfContainers, List<string> selectedItems)
@@ -184,8 +152,6 @@ namespace InterCargo.Pages.Quotations
             public string PackageNature { get; set; }
             [Required]
             public string ImportExportType { get; set; }
-            public bool RequiresPacking { get; set; }
-            public bool RequiresUnpacking { get; set; }
             [Required]
             public string QuarantineRequirements { get; set; }
             [Required]

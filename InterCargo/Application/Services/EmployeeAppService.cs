@@ -42,4 +42,9 @@ public class EmployeeAppService : IEmployeeAppService
     {
         return await _employeeService.GetEmployeeByUsername(username);
     }
+
+    public async Task<Employee> GetEmployeeByEmail(string email)
+    {
+        return await _employeeService.GetEmployeeByEmail(email);
+    }
 }

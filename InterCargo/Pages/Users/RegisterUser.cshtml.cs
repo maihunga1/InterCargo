@@ -38,16 +38,17 @@ namespace InterCargo.Pages.Users
 
             try
             {
-                // Check if username or email already exists
-                if (_userAppService.GetAllUsers().Any(u => u.Username == Input.Username))
+                // Check if email already exists
+                if (_userAppService.GetAllUsers().Any(u => u.Email.ToLower() == Input.Email.ToLower()))
                 {
-                    ModelState.AddModelError("Input.Username", "Username is already taken.");
+                    ModelState.AddModelError("Input.Email", "Email is already registered.");
                     return Page();
                 }
 
-                if (_userAppService.GetAllUsers().Any(u => u.Email == Input.Email))
+                // Check if username already exists
+                if (_userAppService.GetAllUsers().Any(u => u.Username.ToLower() == Input.Username.ToLower()))
                 {
-                    ModelState.AddModelError("Input.Email", "Email is already registered.");
+                    ModelState.AddModelError("Input.Username", "Username is already taken.");
                     return Page();
                 }
 
@@ -57,7 +58,7 @@ namespace InterCargo.Pages.Users
                     Id = Guid.NewGuid(),
                     Username = Input.Username,
                     Email = Input.Email,
-                    Password = HashPassword(Input.Password), // Hash the password before saving
+                    Password = HashPassword(Input.Password),
                     FirstName = Input.FirstName,
                     FamilyName = Input.FamilyName,
                     PhoneNumber = Input.PhoneNumber,
@@ -70,7 +71,7 @@ namespace InterCargo.Pages.Users
 
                 SuccessMessage = "Registration successful! You will be redirected to the login page in 3 seconds...";
                 ModelState.Clear();
-                Input = new RegisterInputModel(); // Clear the form
+                Input = new RegisterInputModel();
                 return Page();
             }
             catch (Exception ex)
@@ -92,7 +93,8 @@ namespace InterCargo.Pages.Users
         public class RegisterInputModel
         {
             [Required(ErrorMessage = "Username is required")]
-            [StringLength(100, MinimumLength = 3, ErrorMessage = "Username must be between 3 and 100 characters")]
+            [StringLength(50, MinimumLength = 3, ErrorMessage = "Username must be between 3 and 50 characters")]
+            [RegularExpression(@"^[a-zA-Z0-9._-]+$", ErrorMessage = "Username can only contain letters, numbers, dots, underscores, and hyphens")]
             public string Username { get; set; }
 
             [Required(ErrorMessage = "Email is required")]
@@ -119,9 +121,9 @@ namespace InterCargo.Pages.Users
             [Phone(ErrorMessage = "Please enter a valid phone number")]
             public string PhoneNumber { get; set; }
 
-            [Required(ErrorMessage = "Company name is required")]
             public string CompanyName { get; set; }
 
+            [Required(ErrorMessage = "Address is required")]
             public string Address { get; set; }
         }
     }

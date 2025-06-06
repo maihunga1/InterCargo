@@ -6,6 +6,7 @@ using InterCargo.BusinessLogic.Interfaces;
 using InterCargo.BusinessLogic.Services;
 using InterCargo.DataAccess.Interfaces;
 using InterCargo.DataAccess.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,13 +23,34 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddAuthentication("UserAuth")
-    .AddCookie("UserAuth", options =>
+// Configure authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+{
+    options.LoginPath = "/Users/LoginUser";
+    options.LogoutPath = "/Users/Logout";
+    options.AccessDeniedPath = "/Users/AccessDenied";
+    options.Cookie.Name = "InterCargo.Auth";
+    options.Events = new CookieAuthenticationEvents
     {
-        options.LoginPath = "/Users/LoginUser";
-        options.LogoutPath = "/Users/Logout";
-        options.AccessDeniedPath = "/Users/AccessDenied";
-    });
+        OnRedirectToLogin = context =>
+        {
+            // Check if the request path starts with /Employees
+            if (context.Request.Path.StartsWithSegments("/Employees"))
+            {
+                context.RedirectUri = "/Employees/LoginEmployee";
+            }
+            context.Response.Redirect(context.RedirectUri);
+            return Task.CompletedTask;
+        }
+    };
+});
 
 builder.Services.AddScoped<IUserAppService, UserAppService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -68,8 +90,10 @@ if (!app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 
+app.UseStaticFiles();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

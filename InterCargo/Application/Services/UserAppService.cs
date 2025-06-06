@@ -2,50 +2,65 @@ using InterCargo.Application.Interfaces;
 using InterCargo.BusinessLogic.Entities;
 using InterCargo.BusinessLogic.Interfaces;
 using System.Collections.Generic;
+using InterCargo.DataAccess;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace InterCargo.Application.Services;
 
 public class UserAppService : IUserAppService
 {
     private readonly IUserService _userService;
+    private readonly ApplicationDbContext _context;
 
-    public UserAppService(IUserService userService)
+    public UserAppService(IUserService userService, ApplicationDbContext context)
     {
         _userService = userService;
+        _context = context;
     }
 
     // Synchronous methods (required by interface)
     public List<User> GetAllUsers()
     {
-        // Since IUserService doesn't have a GetAllUsers method, we'll return an empty list
-        // In a real application, you'd implement this properly
-        return new List<User>();
+        return _context.Users.ToList();
     }
 
-    public User GetUserById(Guid id)
+    public async Task<User> GetUserById(Guid id)
     {
-        // Use the async method and block on it (not ideal, but required by interface)
-        return _userService.GetUserByIdAsync(id).Result;
+        return await _context.Users.FindAsync(id);
     }
 
     public void AddUser(User user)
     {
-        _userService.CreateUserAsync(user).Wait();
+        _context.Users.Add(user);
+        _context.SaveChanges();
     }
 
     public void UpdateUser(User user)
     {
-        _userService.UpdateUserAsync(user).Wait();
+        _context.Users.Update(user);
+        _context.SaveChanges();
     }
 
     public void DeleteUser(Guid id)
     {
-        _userService.DeleteUserAsync(id).Wait();
+        var user = _context.Users.Find(id);
+        if (user != null)
+        {
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+        }
     }
 
-    public Task<User> GetUserByUsername(string username)
+    public async Task<User> GetUserByUsername(string username)
     {
-        return _userService.GetUserByUsernameAsync(username);
+        return await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == username.ToLower());
+    }
+
+    public async Task<User> GetUserByEmail(string email)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
     }
 
     // Asynchronous methods (already implemented)
@@ -77,5 +92,18 @@ public class UserAppService : IUserAppService
     public async Task<bool> ValidateUserCredentialsAsync(string email, string password)
     {
         return await _userService.ValidateUserCredentialsAsync(email, password);
+    }
+
+    public async Task<bool> ValidateUserCredentials(string email, string password)
+    {
+        var user = await GetUserByEmail(email) ?? await GetUserByUsername(email);
+        if (user == null) return false;
+
+        // Compare hashed passwords
+        using (var sha256 = SHA256.Create())
+        {
+            var hashedPassword = Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(password)));
+            return user.Password == hashedPassword;
+        }
     }
 }

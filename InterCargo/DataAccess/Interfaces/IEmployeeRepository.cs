@@ -10,5 +10,6 @@ namespace InterCargo.DataAccess.Interfaces
         void UpdateEmployee(Employee employee);
         void DeleteEmployee(Guid id);
         Task<Employee> GetEmployeeByUsername(string username);
+        Task<Employee> GetEmployeeByEmail(string email);
     }
 }
