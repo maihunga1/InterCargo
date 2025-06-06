@@ -68,7 +68,7 @@ namespace InterCargo.Pages.Employees
                 // Save to database
                 _employeeAppService.AddEmployee(employee);
 
-                SuccessMessage = "Employee registration successful!";
+                SuccessMessage = "Employee registration successful! You will be redirected to the login page in 3 seconds...";
                 ModelState.Clear();
                 return Page();
             }
