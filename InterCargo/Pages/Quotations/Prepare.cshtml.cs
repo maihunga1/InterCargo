@@ -11,11 +11,13 @@ namespace InterCargo.Pages.Quotations
     {
         private readonly IQuotationAppService _quotationService;
         private readonly IUserAppService _userAppService;
+        private readonly ILogger<PrepareModel> _logger;
 
-        public PrepareModel(IQuotationAppService quotationService, IUserAppService userAppService)
+        public PrepareModel(IQuotationAppService quotationService, IUserAppService userAppService, ILogger<PrepareModel> logger)
         {
             _quotationService = quotationService;
             _userAppService = userAppService;
+            _logger = logger;
         }
 
         [BindProperty]
@@ -38,17 +40,27 @@ namespace InterCargo.Pages.Quotations
         public List<string> SelectedChargeItems { get; set; } = new();
         public Quotation SelectedQuotation { get; set; }
         public User SelectedUser { get; set; }
+        [BindProperty]
+        public string RequestId { get; set; }
+        [BindProperty]
+        public Guid QuotationId { get; set; }
 
-        public void OnGet(Guid? quotationId = null)
+        public async Task<IActionResult> OnGetAsync(Guid? quotationId = null)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToPage("/Account/Login");
+            }
+
             Customers = _userAppService.GetAllUsers();
             if (quotationId.HasValue)
             {
-                SelectedQuotation = _quotationService.GetQuotationByIdAsync(quotationId.Value).Result;
+                SelectedQuotation = await _quotationService.GetQuotationByIdAsync(quotationId.Value);
                 if (SelectedQuotation != null)
                 {
+                    QuotationId = SelectedQuotation.Id;
+                    RequestId = SelectedQuotation.Message.Split("Request ID: ")[1].TrimEnd(')');
                     SelectedUser = _userAppService.GetUserById(SelectedQuotation.CustomerId);
-                    // Pre-fill form fields
                     Input = new PrepareInputModel
                     {
                         CustomerId = SelectedQuotation.CustomerId.ToString(),
@@ -57,8 +69,6 @@ namespace InterCargo.Pages.Quotations
                         NumberOfContainers = SelectedQuotation.NumberOfContainers,
                         PackageNature = SelectedQuotation.PackageNature,
                         ImportExportType = SelectedQuotation.ImportExportType,
-                        RequiresPacking = SelectedQuotation.PackingUnpacking.Contains("Packing: Required"),
-                        RequiresUnpacking = SelectedQuotation.PackingUnpacking.Contains("Unpacking: Required"),
                         QuarantineRequirements = SelectedQuotation.QuarantineRequirements,
                         ContainerType = SelectedQuotation.ContainerType,
                         Discount = SelectedQuotation.Discount
@@ -78,13 +88,14 @@ namespace InterCargo.Pages.Quotations
                 PriceBreakdown = GetCustomRateBreakdown(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems);
                 FinalPrice = CalculateFinalPriceWithPercentage(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems, Input.Discount);
             }
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            Customers = _userAppService.GetAllUsers();
             if (!ModelState.IsValid)
             {
+                Customers = _userAppService.GetAllUsers();
                 if (!string.IsNullOrEmpty(Input.ContainerType) && Input.NumberOfContainers > 0)
                 {
                     PriceBreakdown = GetCustomRateBreakdown(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems);
@@ -93,30 +104,37 @@ namespace InterCargo.Pages.Quotations
                 return Page();
             }
 
-            var quotation = new Quotation
+            try
             {
-                Id = Guid.NewGuid(),
-                CustomerId = Guid.Parse(Input.CustomerId),
-                Source = Input.Source,
-                Destination = Input.Destination,
-                NumberOfContainers = Input.NumberOfContainers,
-                PackageNature = Input.PackageNature,
-                ImportExportType = Input.ImportExportType,
-                PackingUnpacking = $"Packing: {(Input.RequiresPacking ? "Required" : "Not Required")}, " +
-                                 $"Unpacking: {(Input.RequiresUnpacking ? "Required" : "Not Required")}",
-                QuarantineRequirements = Input.QuarantineRequirements,
-                Status = "Approved",
-                Message = "Quotation approved and prepared by employee",
-                DateIssued = DateTime.UtcNow,
-                ContainerType = Input.ContainerType,
-                Discount = Input.Discount,
-                FinalPrice = CalculateFinalPriceWithPercentage(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems, Input.Discount),
-                SelectedChargeItemsJson = JsonSerializer.Serialize(SelectedChargeItems)
-            };
+                var existingQuotation = await _quotationService.GetQuotationByIdAsync(QuotationId);
+                if (existingQuotation == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Quotation not found.");
+                    return Page();
+                }
 
-            await _quotationService.AddQuotationAsync(quotation);
-            StatusMessage = "Quotation submitted successfully!";
-            return RedirectToPage("/Quotations/Confirm");
+                // Set the SelectedQuotation property
+                SelectedQuotation = existingQuotation;
+                SelectedUser = _userAppService.GetUserById(existingQuotation.CustomerId);
+
+                // Update the existing quotation
+                existingQuotation.Status = "Approved";
+                existingQuotation.Message = $"Quotation approved and prepared by employee (Request ID: {RequestId})";
+                existingQuotation.Discount = Input.Discount;
+                existingQuotation.FinalPrice = CalculateFinalPriceWithPercentage(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems, Input.Discount);
+                existingQuotation.SelectedChargeItemsJson = JsonSerializer.Serialize(SelectedChargeItems);
+
+                await _quotationService.UpdateQuotationAsync(existingQuotation);
+                
+                StatusMessage = "Quotation approved successfully! You will be redirected to the dashboard in 1 second...";
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while updating quotation");
+                ModelState.AddModelError(string.Empty, "An error occurred while updating the quotation. Please try again.");
+                return Page();
+            }
         }
 
         public Dictionary<string, decimal> GetCustomRateBreakdown(string containerType, int numberOfContainers, List<string> selectedItems)
@@ -184,8 +202,6 @@ namespace InterCargo.Pages.Quotations
             public string PackageNature { get; set; }
             [Required]
             public string ImportExportType { get; set; }
-            public bool RequiresPacking { get; set; }
-            public bool RequiresUnpacking { get; set; }
             [Required]
             public string QuarantineRequirements { get; set; }
             [Required]

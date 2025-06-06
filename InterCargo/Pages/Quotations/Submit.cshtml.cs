@@ -12,6 +12,7 @@ namespace InterCargo.Pages.Quotations
     {
         private readonly IQuotationAppService _quotationService;
         private readonly ILogger<SubmitModel> _logger;
+        private static readonly HashSet<string> SubmittedRequestIds = new HashSet<string>();
 
         public SubmitModel(IQuotationAppService quotationService, ILogger<SubmitModel> logger)
         {
@@ -25,6 +26,7 @@ namespace InterCargo.Pages.Quotations
         [TempData]
         public string StatusMessage { get; set; }
 
+        [BindProperty]
         public string RequestId { get; set; }
 
         public Dictionary<string, decimal> PriceBreakdown { get; set; } = new();
@@ -33,9 +35,15 @@ namespace InterCargo.Pages.Quotations
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return RedirectToPage("/Account/Login", new { returnUrl = Url.Page("/Quotations/Submit") });
+                return RedirectToPage("/Users/LoginUser", new { returnUrl = Url.Page("/Quotations/Submit") });
             }
-            RequestId = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
+
+            // Only generate new RequestId if it's not already set
+            if (string.IsNullOrEmpty(RequestId))
+            {
+                RequestId = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
+            }
+
             if (!string.IsNullOrEmpty(Input.ContainerType) && Input.NumberOfContainers > 0)
             {
                 PriceBreakdown = _quotationService.GetRateBreakdown(Input.ContainerType, Input.NumberOfContainers);
@@ -47,7 +55,7 @@ namespace InterCargo.Pages.Quotations
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return RedirectToPage("/Account/Login", new { returnUrl = Url.Page("/Quotations/Submit") });
+                return RedirectToPage("/Users/LoginUser", new { returnUrl = Url.Page("/Quotations/Submit") });
             }
 
             if (!ModelState.IsValid)
@@ -60,6 +68,13 @@ namespace InterCargo.Pages.Quotations
                     string.Join(", ", ModelState.Values
                         .SelectMany(v => v.Errors)
                         .Select(e => e.ErrorMessage)));
+                return Page();
+            }
+
+            // Check if this RequestId has already been submitted
+            if (SubmittedRequestIds.Contains(RequestId))
+            {
+                ModelState.AddModelError(string.Empty, "This quotation has already been submitted.");
                 return Page();
             }
 
@@ -84,11 +99,10 @@ namespace InterCargo.Pages.Quotations
                     NumberOfContainers = Input.NumberOfContainers,
                     PackageNature = Input.PackageNature,
                     ImportExportType = Input.ImportExportType,
-                    PackingUnpacking = $"Packing: {(Input.RequiresPacking ? "Required" : "Not Required")}, " +
-                                     $"Unpacking: {(Input.RequiresUnpacking ? "Required" : "Not Required")}",
+                    PackingUnpacking = Input.PackingUnpackingType,
                     QuarantineRequirements = Input.QuarantineRequirements,
                     Status = "Pending",
-                    Message = "New quotation request from customer",
+                    Message = $"New quotation request from customer (Request ID: {RequestId})",
                     CustomerResponseStatus = "Pending",
                     DateIssued = DateTime.UtcNow,
                     ContainerType = Input.ContainerType
@@ -105,10 +119,13 @@ namespace InterCargo.Pages.Quotations
                     $"Status: {quotation.Status}");
 
                 await _quotationService.AddQuotationAsync(quotation);
+                
+                // Add the RequestId to the set of submitted IDs
+                SubmittedRequestIds.Add(RequestId);
+                
                 _logger.LogInformation("Quotation saved successfully with status: {Status}", quotation.Status);
 
-                StatusMessage = "Quotation submitted successfully!";
-                PriceBreakdown = _quotationService.GetRateBreakdown(Input.ContainerType, Input.NumberOfContainers);
+                StatusMessage = "Quotation submitted successfully! You will be redirected to your dashboard in 3 seconds...";
                 return Page();
             }
             catch (Exception ex)
@@ -138,18 +155,16 @@ namespace InterCargo.Pages.Quotations
             [Display(Name = "Import/Export Type")]
             public string ImportExportType { get; set; }
 
-            [Display(Name = "Requires Packing")]
-            public bool RequiresPacking { get; set; }
-
-            [Display(Name = "Requires Unpacking")]
-            public bool RequiresUnpacking { get; set; }
+            [Required(ErrorMessage = "Packing/Unpacking requirement is required")]
+            [Display(Name = "Packing/Unpacking Type")]
+            public string PackingUnpackingType { get; set; }
 
             [Required(ErrorMessage = "Quarantine requirements are required")]
             [Display(Name = "Quarantine Requirements")]
             public string QuarantineRequirements { get; set; }
 
             [Required(ErrorMessage = "Container type is required")]
-            public string ContainerType { get; set; } // '20Feet' or '40Feet'
+            public string ContainerType { get; set; }
         }
     }
 }

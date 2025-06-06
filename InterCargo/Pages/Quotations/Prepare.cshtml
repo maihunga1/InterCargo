@@ -29,10 +29,13 @@
 }
 
 <div class="container mt-4">
-    <h2>Prepare Quotation</h2>
+    <h2>Prepare Quotation - @Model.RequestId</h2>
     @if (!string.IsNullOrEmpty(Model.StatusMessage))
     {
-        <div class="alert alert-success">@Model.StatusMessage</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @Model.StatusMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     }
     @if (Model.SelectedQuotation != null && Model.SelectedUser != null)
     {
@@ -96,17 +99,20 @@
             </div>
         </div>
     }
-    <form method="post">
-        <input type="hidden" asp-for="Input.CustomerId" value="@Model.SelectedQuotation.CustomerId" />
-        <input type="hidden" asp-for="Input.Source" value="@Model.SelectedQuotation.Source" />
-        <input type="hidden" asp-for="Input.Destination" value="@Model.SelectedQuotation.Destination" />
-        <input type="hidden" asp-for="Input.NumberOfContainers" value="@Model.SelectedQuotation.NumberOfContainers" />
-        <input type="hidden" asp-for="Input.PackageNature" value="@Model.SelectedQuotation.PackageNature" />
-        <input type="hidden" asp-for="Input.ImportExportType" value="@Model.SelectedQuotation.ImportExportType" />
-        <input type="hidden" asp-for="Input.RequiresPacking" value="@Model.SelectedQuotation.PackingUnpacking.Contains("Packing: Required")" />
-        <input type="hidden" asp-for="Input.RequiresUnpacking" value="@Model.SelectedQuotation.PackingUnpacking.Contains("Unpacking: Required")" />
-        <input type="hidden" asp-for="Input.QuarantineRequirements" value="@Model.SelectedQuotation.QuarantineRequirements" />
-        <input type="hidden" asp-for="Input.ContainerType" value="@Model.SelectedQuotation.ContainerType" />
+    <form method="post" id="quotationForm">
+        <input type="hidden" asp-for="RequestId" value="@Model.RequestId" />
+        @if (Model.SelectedQuotation != null)
+        {
+            <input type="hidden" asp-for="QuotationId" value="@Model.SelectedQuotation.Id" />
+            <input type="hidden" asp-for="Input.CustomerId" value="@Model.SelectedQuotation.CustomerId" />
+            <input type="hidden" asp-for="Input.Source" value="@Model.SelectedQuotation.Source" />
+            <input type="hidden" asp-for="Input.Destination" value="@Model.SelectedQuotation.Destination" />
+            <input type="hidden" asp-for="Input.NumberOfContainers" value="@Model.SelectedQuotation.NumberOfContainers" />
+            <input type="hidden" asp-for="Input.PackageNature" value="@Model.SelectedQuotation.PackageNature" />
+            <input type="hidden" asp-for="Input.ImportExportType" value="@Model.SelectedQuotation.ImportExportType" />
+            <input type="hidden" asp-for="Input.QuarantineRequirements" value="@Model.SelectedQuotation.QuarantineRequirements" />
+            <input type="hidden" asp-for="Input.ContainerType" value="@Model.SelectedQuotation.ContainerType" />
+        }
         <div class="form-group mb-3">
             <label>Charge Items (tick to include in quotation):</label>
             <div id="charge-items-list">
@@ -202,5 +208,20 @@
             });
             document.getElementById('discount-input').addEventListener('input', updateBreakdown);
         });
+
+        // Prevent multiple form submissions
+        document.getElementById('quotationForm').addEventListener('submit', function() {
+            document.querySelector('button[type="submit"]').disabled = true;
+        });
+        
+        // Redirect after successful submission
+        @if (!string.IsNullOrEmpty(Model.StatusMessage))
+        {
+            <text>
+            setTimeout(function() {
+                window.location.href = '/Quotations/Confirm';
+            }, 1000);
+            </text>
+        }
     </script>
 }
