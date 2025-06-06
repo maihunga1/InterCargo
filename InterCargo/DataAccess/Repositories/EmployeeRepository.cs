@@ -49,4 +49,9 @@ public class EmployeeRepository : IEmployeeRepository
     {
         return await _context.Employees.FirstOrDefaultAsync(e => e.Username == username);
     }
+
+    public async Task<Employee> GetEmployeeByEmail(string email)
+    {
+        return await _context.Employees.FirstOrDefaultAsync(e => e.Email == email);
+    }
 }

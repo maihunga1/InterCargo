@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace InterCargo.Pages.Employees;
 
@@ -38,11 +39,13 @@ public class LoginEmployeeModel : PageModel
             return Page();
         }
 
-        var employee = await _employeeAppService.GetEmployeeByUsername(Input.Username);
+        // Try to find employee by email or username
+        var employee = await _employeeAppService.GetEmployeeByUsername(Input.EmailOrUsername) ??
+                      await _employeeAppService.GetEmployeeByEmail(Input.EmailOrUsername);
 
         if (employee == null || !employee.Password.Equals(HashPassword(Input.Password)))
         {
-            ModelState.AddModelError("Input.Password", "Invalid username or password.");
+            ModelState.AddModelError("Input.Password", "Invalid username/email or password.");
             return Page();
         }
 
@@ -51,11 +54,12 @@ public class LoginEmployeeModel : PageModel
         {
             new Claim(ClaimTypes.Name, employee.Username),
             new Claim(ClaimTypes.Email, employee.Email),
-            new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString())
+            new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
+            new Claim("UserRole", "Employee")
         };
-        var identity = new ClaimsIdentity(claims, "login");
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
-        await HttpContext.SignInAsync(principal);
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
         return RedirectToPage("/Quotations/Confirm");
     }
@@ -71,10 +75,12 @@ public class LoginEmployeeModel : PageModel
 
     public class LoginInputModel
     {
-        [Required(ErrorMessage = "Username is required")]
-        public string Username { get; set; }
+        [Required(ErrorMessage = "Email or username is required")]
+        [Display(Name = "Email or Username")]
+        public string EmailOrUsername { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
     }
 }

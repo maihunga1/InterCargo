@@ -45,96 +45,46 @@ namespace InterCargo.Pages.Quotations
         [BindProperty]
         public Guid QuotationId { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(Guid? quotationId = null)
+        public async Task<IActionResult> OnGetAsync(string id)
         {
-            if (!User.Identity.IsAuthenticated)
+            if (string.IsNullOrEmpty(id))
             {
-                return RedirectToPage("/Account/Login");
+                return NotFound();
             }
 
-            Customers = _userAppService.GetAllUsers();
-            if (quotationId.HasValue)
+            var quotation = await _quotationService.GetQuotationByIdAsync(Guid.Parse(id));
+            if (quotation == null)
             {
-                SelectedQuotation = await _quotationService.GetQuotationByIdAsync(quotationId.Value);
-                if (SelectedQuotation != null)
-                {
-                    QuotationId = SelectedQuotation.Id;
-                    RequestId = SelectedQuotation.Message.Split("Request ID: ")[1].TrimEnd(')');
-                    SelectedUser = _userAppService.GetUserById(SelectedQuotation.CustomerId);
-                    Input = new PrepareInputModel
-                    {
-                        CustomerId = SelectedQuotation.CustomerId.ToString(),
-                        Source = SelectedQuotation.Source,
-                        Destination = SelectedQuotation.Destination,
-                        NumberOfContainers = SelectedQuotation.NumberOfContainers,
-                        PackageNature = SelectedQuotation.PackageNature,
-                        ImportExportType = SelectedQuotation.ImportExportType,
-                        QuarantineRequirements = SelectedQuotation.QuarantineRequirements,
-                        ContainerType = SelectedQuotation.ContainerType,
-                        Discount = SelectedQuotation.Discount
-                    };
-                    if (!string.IsNullOrEmpty(SelectedQuotation.SelectedChargeItemsJson))
-                    {
-                        SelectedChargeItems = JsonSerializer.Deserialize<List<string>>(SelectedQuotation.SelectedChargeItemsJson) ?? new List<string>();
-                    }
-                }
+                return NotFound();
             }
-            if (SelectedChargeItems == null || SelectedChargeItems.Count == 0)
-            {
-                SelectedChargeItems = new List<string>(AllChargeItems);
-            }
-            if (!string.IsNullOrEmpty(Input.ContainerType) && Input.NumberOfContainers > 0)
-            {
-                PriceBreakdown = GetCustomRateBreakdown(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems);
-                FinalPrice = CalculateFinalPriceWithPercentage(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems, Input.Discount);
-            }
+
+            SelectedQuotation = quotation;
+            SelectedUser = await _userAppService.GetUserById(quotation.CustomerId);
+            
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string id, string status, string message)
         {
-            if (!ModelState.IsValid)
+            if (string.IsNullOrEmpty(id))
             {
-                Customers = _userAppService.GetAllUsers();
-                if (!string.IsNullOrEmpty(Input.ContainerType) && Input.NumberOfContainers > 0)
-                {
-                    PriceBreakdown = GetCustomRateBreakdown(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems);
-                    FinalPrice = CalculateFinalPriceWithPercentage(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems, Input.Discount);
-                }
-                return Page();
+                return NotFound();
             }
 
-            try
+            var quotation = await _quotationService.GetQuotationByIdAsync(Guid.Parse(id));
+            if (quotation == null)
             {
-                var existingQuotation = await _quotationService.GetQuotationByIdAsync(QuotationId);
-                if (existingQuotation == null)
-                {
-                    ModelState.AddModelError(string.Empty, "Quotation not found.");
-                    return Page();
-                }
-
-                // Set the SelectedQuotation property
-                SelectedQuotation = existingQuotation;
-                SelectedUser = _userAppService.GetUserById(existingQuotation.CustomerId);
-
-                // Update the existing quotation
-                existingQuotation.Status = "Approved";
-                existingQuotation.Message = $"Quotation approved and prepared by employee (Request ID: {RequestId})";
-                existingQuotation.Discount = Input.Discount;
-                existingQuotation.FinalPrice = CalculateFinalPriceWithPercentage(Input.ContainerType, Input.NumberOfContainers, SelectedChargeItems, Input.Discount);
-                existingQuotation.SelectedChargeItemsJson = JsonSerializer.Serialize(SelectedChargeItems);
-
-                await _quotationService.UpdateQuotationAsync(existingQuotation);
-                
-                StatusMessage = "Quotation approved successfully! You will be redirected to the dashboard in 1 second...";
-                return Page();
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while updating quotation");
-                ModelState.AddModelError(string.Empty, "An error occurred while updating the quotation. Please try again.");
-                return Page();
-            }
+
+            quotation.Status = status;
+            quotation.Message = message;
+            await _quotationService.UpdateQuotationAsync(quotation);
+
+            SelectedQuotation = quotation;
+            SelectedUser = await _userAppService.GetUserById(quotation.CustomerId);
+
+            return RedirectToPage("/Quotations/List");
         }
 
         public Dictionary<string, decimal> GetCustomRateBreakdown(string containerType, int numberOfContainers, List<string> selectedItems)
