@@ -14,6 +14,11 @@ namespace InterCargo.BusinessLogic.Services
             _userRepository = userRepository;
         }
 
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            return _userRepository.GetAllUsers();
+        }
+
         public async Task<User> GetUserByIdAsync(Guid id)
         {
             return await _userRepository.GetByIdAsync(id);

@@ -13,12 +13,18 @@ namespace InterCargo.Pages.Users
         private readonly IQuotationAppService _quotationService;
         private readonly ILogger<DashboardModel> _logger;
         private readonly IEmployeeAppService _employeeAppService;
+        private readonly IUserAppService _userAppService;
 
-        public DashboardModel(IQuotationAppService quotationService, ILogger<DashboardModel> logger, IEmployeeAppService employeeAppService)
+        public DashboardModel(
+            IQuotationAppService quotationService, 
+            ILogger<DashboardModel> logger, 
+            IEmployeeAppService employeeAppService,
+            IUserAppService userAppService)
         {
             _quotationService = quotationService;
             _logger = logger;
             _employeeAppService = employeeAppService;
+            _userAppService = userAppService;
         }
 
         public List<Quotation> UserQuotations { get; set; } = new List<Quotation>();
@@ -33,6 +39,8 @@ namespace InterCargo.Pages.Users
         public Dictionary<Guid, List<string>> QuotationSelectedChargeItems { get; set; } = new();
         public Dictionary<Guid, Dictionary<string, decimal>> QuotationPriceBreakdowns { get; set; } = new();
         public Dictionary<Guid, decimal?> QuotationFinalPrices { get; set; } = new();
+        [BindProperty(SupportsGet = true)]
+        public string SearchQuery { get; set; }
 
         public async Task<IActionResult> OnGetAsync(Guid? viewId = null)
         {
@@ -51,7 +59,8 @@ namespace InterCargo.Pages.Users
 
             try
             {
-                UserQuotations = await _quotationService.GetQuotationsByCustomerAsync(userId.ToUpper());
+                UserQuotations = await _quotationService.GetQuotationsByCustomerAsync(userId);
+
                 foreach (var q in UserQuotations)
                 {
                     if (!string.IsNullOrEmpty(q.SelectedChargeItemsJson))
@@ -144,7 +153,7 @@ namespace InterCargo.Pages.Users
             {
                 return RedirectToPage("/Quotations/Confirm");
             }
-            UserQuotations = await _quotationService.GetQuotationsByCustomerAsync(userId.ToUpper());
+            UserQuotations = await _quotationService.GetQuotationsByCustomerAsync(userId);
             SelectedQuotation = UserQuotations.FirstOrDefault(q => q.Id == quotationId);
             if (SelectedQuotation != null)
             {

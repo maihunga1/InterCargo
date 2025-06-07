@@ -10,5 +10,6 @@ namespace InterCargo.DataAccess.Interfaces
         Task<bool> CreateAsync(User user);
         Task<bool> UpdateAsync(User user);
         Task<bool> DeleteAsync(Guid id);
+        List<User> GetAllUsers();
     }
 }

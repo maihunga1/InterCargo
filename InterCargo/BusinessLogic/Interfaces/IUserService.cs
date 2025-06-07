@@ -11,4 +11,5 @@ public interface IUserService
     Task<bool> UpdateUserAsync(User user);
     Task<bool> DeleteUserAsync(Guid id);
     Task<bool> ValidateUserCredentialsAsync(string email, string password);
+    Task<List<User>> GetAllUsersAsync();
 }

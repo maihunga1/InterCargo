@@ -28,6 +28,10 @@ namespace InterCargo.Pages.Quotations
         public Quotation SelectedQuotation { get; set; }
         public User SelectedUser { get; set; }
         public bool ShowRejectForm { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string SearchQuery { get; set; }
+        public Dictionary<Guid, int> CustomerQuotationCounts { get; set; } = new();
+        public Dictionary<Guid, bool> CustomerEligibleForDiscount { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(Guid? viewId = null, string status = "all")
         {
@@ -44,10 +48,27 @@ namespace InterCargo.Pages.Quotations
                 // Get all quotations
                 AllQuotations = await _quotationService.GetAllQuotationsAsync();
 
+                // Apply search filter if provided
+                if (!string.IsNullOrWhiteSpace(SearchQuery))
+                {
+                    var users = await _userAppService.SearchUsersAsync(SearchQuery);
+                    var userIds = users.Select(u => u.Id.ToString()).ToList();
+                    AllQuotations = AllQuotations.Where(q => userIds.Contains(q.CustomerId.ToString())).ToList();
+                }
+
                 // Apply status filter
                 if (!string.IsNullOrEmpty(status) && status != "all")
                 {
                     AllQuotations = AllQuotations.Where(q => q.Status.ToLower() == status.ToLower()).ToList();
+                }
+
+                // Calculate quotation counts and discount eligibility for each customer
+                var customerQuotations = AllQuotations.GroupBy(q => q.CustomerId);
+                foreach (var group in customerQuotations)
+                {
+                    var count = group.Count();
+                    CustomerQuotationCounts[group.Key] = count;
+                    CustomerEligibleForDiscount[group.Key] = count > 3;
                 }
 
                 // Sort by date, newest first

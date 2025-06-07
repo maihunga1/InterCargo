@@ -13,4 +13,7 @@ public interface IUserAppService
     void UpdateUser(User user);
     void DeleteUser(Guid id);
     Task<bool> ValidateUserCredentials(string email, string password);
+    Task<User?> GetUserById(string id);
+    Task<List<User>> GetAllUsersAsync();
+    Task<List<User>> SearchUsersAsync(string searchQuery);
 }

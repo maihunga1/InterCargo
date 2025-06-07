@@ -14,15 +14,27 @@
 <div class="container mt-4">
     <h2>Quotations</h2>
     <div class="mb-3">
-        <div class="btn-group" role="group">
-            <a href="?status=all"
-                class="btn btn-outline-primary @(Model.FilterStatus == null || Model.FilterStatus == "all" ? "active" : "")">All</a>
-            <a href="?status=pending"
-                class="btn btn-outline-warning @(Model.FilterStatus == "pending" ? "active" : "")">Pending</a>
-            <a href="?status=approved"
-                class="btn btn-outline-success @(Model.FilterStatus == "approved" ? "active" : "")">Accepted</a>
-            <a href="?status=rejected"
-                class="btn btn-outline-danger @(Model.FilterStatus == "rejected" ? "active" : "")">Rejected</a>
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <form method="get" class="d-flex align-items-center">
+                    <input type="text" name="searchQuery" class="form-control me-2" placeholder="Search by customer name or email" value="@Model.SearchQuery">
+                    <button type="submit" class="btn btn-outline-secondary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group" role="group">
+                    <a href="?status=all"
+                        class="btn btn-outline-primary @(Model.FilterStatus == null || Model.FilterStatus == "all" ? "active" : "")">All</a>
+                    <a href="?status=pending"
+                        class="btn btn-outline-warning @(Model.FilterStatus == "pending" ? "active" : "")">Pending</a>
+                    <a href="?status=approved"
+                        class="btn btn-outline-success @(Model.FilterStatus == "approved" ? "active" : "")">Accepted</a>
+                    <a href="?status=rejected"
+                        class="btn btn-outline-danger @(Model.FilterStatus == "rejected" ? "active" : "")">Rejected</a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -107,6 +119,13 @@
                                         <li class="list-group-item"><strong>Email:</strong> @Model.SelectedUser.Email</li>
                                         <li class="list-group-item"><strong>Phone Number:</strong> @Model.SelectedUser.PhoneNumber</li>
                                         <li class="list-group-item"><strong>Company:</strong> @Model.SelectedUser.CompanyName</li>
+                                        <li class="list-group-item">
+                                            <strong>Total Quotations:</strong> @Model.CustomerQuotationCounts[Model.SelectedUser.Id]
+                                            @if (Model.CustomerEligibleForDiscount[Model.SelectedUser.Id])
+                                            {
+                                                <span class="badge bg-success ms-2">Eligible for 5% discount</span>
+                                            }
+                                        </li>
                                     </ul>
                                 }
                                 else

@@ -2233,6 +2233,7 @@
     "net9.0": [
       "BCrypt.Net-Next >= 4.0.3",
       "Interport-Cargo >= 1.0.0",
+      "Microsoft.Extensions.Logging >= 9.0.4",
       "Microsoft.NET.Test.Sdk >= 17.9.0",
       "Moq >= 4.20.70",
       "coverlet.collector >= 6.0.0",
@@ -2241,32 +2242,33 @@
     ]
   },
   "packageFolders": {
-    "/Users/qhungmai/.nuget/packages/": {}
+    "/Users/callystakosasih/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/qhungmai/Documents/GitHub/InterCargo/InterCargo.Tests/InterCargo.Tests.csproj",
+      "projectUniqueName": "/Users/callystakosasih/Downloads/QUT/IFN662/InterCargo/InterCargo.Tests/InterCargo.Tests.csproj",
       "projectName": "InterCargo.Tests",
-      "projectPath": "/Users/qhungmai/Documents/GitHub/InterCargo/InterCargo.Tests/InterCargo.Tests.csproj",
-      "packagesPath": "/Users/qhungmai/.nuget/packages/",
-      "outputPath": "/Users/qhungmai/Documents/GitHub/InterCargo/InterCargo.Tests/obj/",
+      "projectPath": "/Users/callystakosasih/Downloads/QUT/IFN662/InterCargo/InterCargo.Tests/InterCargo.Tests.csproj",
+      "packagesPath": "/Users/callystakosasih/.nuget/packages/",
+      "outputPath": "/Users/callystakosasih/Downloads/QUT/IFN662/InterCargo/InterCargo.Tests/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/qhungmai/.nuget/NuGet/NuGet.Config"
+        "/Users/callystakosasih/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
+        "/usr/local/Cellar/dotnet/9.0.5/libexec/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "/Users/qhungmai/Documents/GitHub/InterCargo/InterCargo/Interport-Cargo.csproj": {
-              "projectPath": "/Users/qhungmai/Documents/GitHub/InterCargo/InterCargo/Interport-Cargo.csproj"
+            "/Users/callystakosasih/Downloads/QUT/IFN662/InterCargo/InterCargo/Interport-Cargo.csproj": {
+              "projectPath": "/Users/callystakosasih/Downloads/QUT/IFN662/InterCargo/InterCargo/Interport-Cargo.csproj"
             }
           }
         }
@@ -2281,7 +2283,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net9.0": {
@@ -2290,6 +2292,10 @@
           "BCrypt.Net-Next": {
             "target": "Package",
             "version": "[4.0.3, )"
+          },
+          "Microsoft.Extensions.Logging": {
+            "target": "Package",
+            "version": "[9.0.4, )"
           },
           "Microsoft.NET.Test.Sdk": {
             "target": "Package",
@@ -2332,7 +2338,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/Cellar/dotnet/9.0.5/libexec/sdk/9.0.106/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

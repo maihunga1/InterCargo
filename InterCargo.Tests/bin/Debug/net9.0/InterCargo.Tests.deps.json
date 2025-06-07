@@ -10,6 +10,7 @@
         "dependencies": {
           "BCrypt.Net-Next": "4.0.3",
           "Interport-Cargo": "1.0.0",
+          "Microsoft.Extensions.Logging": "9.0.4",
           "Microsoft.NET.Test.Sdk": "17.9.0",
           "Moq": "4.20.70",
           "coverlet.collector": "6.0.0",
@@ -648,26 +649,10 @@
           }
         }
       },
-      "System.Diagnostics.EventLog/6.0.0": {
-        "runtimeTargets": {
-          "runtimes/win/lib/net6.0/System.Diagnostics.EventLog.Messages.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
-          }
-        }
-      },
+      "System.Diagnostics.EventLog/6.0.0": {},
       "System.Memory/4.5.3": {},
       "System.Reflection.Metadata/1.6.0": {},
-      "System.Text.Json/9.0.4": {
-        "runtime": {
-          "lib/net9.0/System.Text.Json.dll": {
-            "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.425.16305"
-          }
-        }
-      },
+      "System.Text.Json/9.0.4": {},
       "xunit/2.6.6": {
         "dependencies": {
           "xunit.analyzers": "1.10.0",
@@ -728,7 +713,7 @@
         },
         "runtime": {
           "Interport-Cargo.dll": {
-            "assemblyVersion": "1.0.0.0",
+            "assemblyVersion": "1.0.0",
             "fileVersion": "1.0.0.0"
           }
         }

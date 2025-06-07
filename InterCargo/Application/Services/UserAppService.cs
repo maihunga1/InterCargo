@@ -106,4 +106,30 @@ public class UserAppService : IUserAppService
             return user.Password == hashedPassword;
         }
     }
+
+    public async Task<List<User>> SearchUsersAsync(string searchQuery)
+    {
+        if (string.IsNullOrWhiteSpace(searchQuery))
+            return new List<User>();
+
+        var allUsers = await _userService.GetAllUsersAsync();
+        return allUsers.Where(u => 
+            (u.FirstName + " " + u.FamilyName).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+            u.Email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
+        ).ToList();
+    }
+
+    public async Task<User?> GetUserById(string id)
+    {
+        if (Guid.TryParse(id, out var guid))
+        {
+            return await _userService.GetUserByIdAsync(guid);
+        }
+        return null;
+    }
+
+    public async Task<List<User>> GetAllUsersAsync()
+    {
+        return await _userService.GetAllUsersAsync();
+    }
 }
