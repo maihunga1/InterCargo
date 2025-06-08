@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("InterCargo.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0fe5d68099860318d8187d4339c970ea1a65776c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bb226e77245108571ebf161edd02c1e6fb85aeca")]
 [assembly: System.Reflection.AssemblyProductAttribute("InterCargo.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("InterCargo.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

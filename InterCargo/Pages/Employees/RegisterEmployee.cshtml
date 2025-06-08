@@ -1,5 +1,8 @@
 @page
 @model InterCargo.Pages.Employees.RegisterEmployeeModel
+@{
+    ViewData["Title"] = "Register Employee";
+}
 
 <div class="container">
     <div class="row justify-content-center mt-5">
@@ -27,14 +30,15 @@
                         </div>
                     }
 
-                    <form method="post">
+                    <form method="post" id="registrationForm">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label asp-for="Input.Username" class="form-label"></label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                        <input asp-for="Input.Username" class="form-control" placeholder="Enter username" />
+                                        <input asp-for="Input.Username" class="form-control"
+                                            placeholder="Enter username" />
                                     </div>
                                     <span asp-validation-for="Input.Username" class="text-danger"></span>
                                 </div>
@@ -57,17 +61,35 @@
                                     <label asp-for="Input.Password" class="form-label"></label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                        <input asp-for="Input.Password" class="form-control" placeholder="Enter password" />
+                                        <input asp-for="Input.Password" class="form-control"
+                                            placeholder="Enter password" id="passwordInput" />
                                     </div>
                                     <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                    <small class="form-text text-muted">
+                                        Password must be at least 8 characters long and contain at least one uppercase
+                                        letter, one lowercase letter, one number, and one special character.
+                                    </small>
                                 </div>
+                                <ul class="list-unstyled mt-2" id="passwordChecklist">
+                                    <li id="pw-length" class="text-danger"><i class="bi bi-x-circle"></i> At least 8
+                                        characters long</li>
+                                    <li id="pw-upper" class="text-danger"><i class="bi bi-x-circle"></i> At least one
+                                        uppercase letter</li>
+                                    <li id="pw-lower" class="text-danger"><i class="bi bi-x-circle"></i> At least one
+                                        lowercase letter</li>
+                                    <li id="pw-number" class="text-danger"><i class="bi bi-x-circle"></i> At least one
+                                        number</li>
+                                    <li id="pw-special" class="text-danger"><i class="bi bi-x-circle"></i> At least one
+                                        special character</li>
+                                </ul>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label asp-for="Input.ConfirmPassword" class="form-label"></label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                                        <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirm password" />
+                                        <input asp-for="Input.ConfirmPassword" class="form-control"
+                                            placeholder="Confirm password" />
                                     </div>
                                     <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                                 </div>
@@ -80,7 +102,8 @@
                                     <label asp-for="Input.FirstName" class="form-label"></label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
-                                        <input asp-for="Input.FirstName" class="form-control" placeholder="Enter first name" />
+                                        <input asp-for="Input.FirstName" class="form-control"
+                                            placeholder="Enter first name" />
                                     </div>
                                     <span asp-validation-for="Input.FirstName" class="text-danger"></span>
                                 </div>
@@ -90,7 +113,8 @@
                                     <label asp-for="Input.FamilyName" class="form-label"></label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-person-vcard-fill"></i></span>
-                                        <input asp-for="Input.FamilyName" class="form-control" placeholder="Enter family name" />
+                                        <input asp-for="Input.FamilyName" class="form-control"
+                                            placeholder="Enter family name" />
                                     </div>
                                     <span asp-validation-for="Input.FamilyName" class="text-danger"></span>
                                 </div>
@@ -101,7 +125,8 @@
                             <label asp-for="Input.PhoneNumber" class="form-label"></label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Enter phone number" />
+                                <input asp-for="Input.PhoneNumber" class="form-control"
+                                    placeholder="Enter phone number" />
                             </div>
                             <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                         </div>
@@ -135,7 +160,8 @@
                             <label asp-for="Input.EmployeeId" class="form-label"></label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-person-badge-fill"></i></span>
-                                <input asp-for="Input.EmployeeId" class="form-control" placeholder="Enter employee ID" />
+                                <input asp-for="Input.EmployeeId" class="form-control"
+                                    placeholder="Enter employee ID" />
                             </div>
                             <span asp-validation-for="Input.EmployeeId" class="text-danger"></span>
                         </div>
@@ -143,8 +169,9 @@
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary btn-lg">Register Employee</button>
                             <p class="text-center mt-3 mb-0">
-                                Already have an account? 
-                                <a asp-page="/Employees/LoginEmployee" class="text-primary text-decoration-none">Login here</a>
+                                Already have an account?
+                                <a asp-page="/Employees/LoginEmployee" class="text-primary text-decoration-none">Login
+                                    here</a>
                             </p>
                         </div>
                     </form>
@@ -154,15 +181,100 @@
     </div>
 </div>
 
+<!-- Password Validation Modal -->
+<div class="modal fade" id="passwordValidationModal" tabindex="-1" aria-labelledby="passwordValidationModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="passwordValidationModalLabel">Password Requirements</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <h6 class="alert-heading">Your password does not meet the requirements:</h6>
+                    <ul class="mb-0" id="passwordErrorList">
+                    </ul>
+                </div>
+                <div class="mt-3">
+                    <h6>Password must meet all of these requirements:</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-check-circle-fill text-success"></i> At least 8 characters long</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> At least one uppercase letter</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> At least one lowercase letter</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> At least one number</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> At least one special character</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">I Understand</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    
-    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
-    {
-        <script>
-            setTimeout(function() {
-                window.location.href = '/Employees/LoginEmployee';
-            }, 3000);
-        </script>
-    }
+
+    <script>
+        function checkPasswordRequirements(password) {
+            return {
+                length: password.length >= 8,
+                upper: /[A-Z]/.test(password),
+                lower: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[^A-Za-z0-9]/.test(password)
+            };
+        }
+
+        $(document).ready(function () {
+            $('#passwordInput').on('input', function () {
+                var password = $(this).val();
+                var req = checkPasswordRequirements(password);
+                $('#pw-length').toggleClass('text-success', req.length).toggleClass('text-danger', !req.length)
+                    .find('i').attr('class', req.length ? 'bi bi-check-circle-fill' : 'bi bi-x-circle');
+                $('#pw-upper').toggleClass('text-success', req.upper).toggleClass('text-danger', !req.upper)
+                    .find('i').attr('class', req.upper ? 'bi bi-check-circle-fill' : 'bi bi-x-circle');
+                $('#pw-lower').toggleClass('text-success', req.lower).toggleClass('text-danger', !req.lower)
+                    .find('i').attr('class', req.lower ? 'bi bi-check-circle-fill' : 'bi bi-x-circle');
+                $('#pw-number').toggleClass('text-success', req.number).toggleClass('text-danger', !req.number)
+                    .find('i').attr('class', req.number ? 'bi bi-check-circle-fill' : 'bi bi-x-circle');
+                $('#pw-special').toggleClass('text-success', req.special).toggleClass('text-danger', !req.special)
+                    .find('i').attr('class', req.special ? 'bi bi-check-circle-fill' : 'bi bi-x-circle');
+            });
+
+            // Handle form submission
+            $('#registrationForm').on('submit', function (e) {
+                var passwordError = $('.field-validation-error[data-valmsg-for="Input.Password"]').text();
+                if (passwordError) {
+                    e.preventDefault();
+
+                    // Split the error message into individual requirements
+                    var errors = passwordError.split('. ').filter(error => error.trim() !== '');
+
+                    // Update the error list in the modal
+                    var errorList = $('#passwordErrorList');
+                    errorList.empty();
+                    errors.forEach(function (error) {
+                        errorList.append('<li>' + error + '</li>');
+                    });
+
+                    // Show the modal
+                    var modal = new bootstrap.Modal(document.getElementById('passwordValidationModal'));
+                    modal.show();
+                }
+            });
+
+            // Redirect after successful registration
+            @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+                {
+                    <text>
+                        setTimeout(function() {
+                            window.location.href = '/Employees/LoginEmployee';
+                                                        }, 3000);
+                    </text>
+            }
+                });
+    </script>
 }

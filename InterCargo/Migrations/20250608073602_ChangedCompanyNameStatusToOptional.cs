@@ -5,14 +5,14 @@
 namespace InterCargo.Migrations
 {
     /// <inheritdoc />
-    public partial class ChangedCustomerResponseStatusToOptional : Migration
+    public partial class ChangedCompanyNameStatusToOptional : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "CustomerResponseStatus",
-                table: "Quotations",
+                name: "CompanyName",
+                table: "Users",
                 type: "TEXT",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -23,8 +23,8 @@ namespace InterCargo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "CustomerResponseStatus",
-                table: "Quotations",
+                name: "CompanyName",
+                table: "Users",
                 type: "TEXT",
                 nullable: false,
                 defaultValue: "",

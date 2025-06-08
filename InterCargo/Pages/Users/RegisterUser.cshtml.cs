@@ -5,6 +5,7 @@ using InterCargo.BusinessLogic.Entities;
 using System.Security.Cryptography;
 using System.Text;
 using InterCargo.Application.Interfaces;
+using InterCargo.BusinessLogic.Validation;
 
 namespace InterCargo.Pages.Users
 {
@@ -103,7 +104,7 @@ namespace InterCargo.Pages.Users
 
             [Required(ErrorMessage = "Password is required")]
             [DataType(DataType.Password)]
-            [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long")]
+            [PasswordValidation]
             public string Password { get; set; }
 
             [Required(ErrorMessage = "Please confirm your password")]
@@ -121,7 +122,7 @@ namespace InterCargo.Pages.Users
             [Phone(ErrorMessage = "Please enter a valid phone number")]
             public string PhoneNumber { get; set; }
 
-            public string CompanyName { get; set; }
+            public string? CompanyName { get; set; }
 
             [Required(ErrorMessage = "Address is required")]
             public string Address { get; set; }

@@ -5,6 +5,7 @@ using InterCargo.BusinessLogic.Entities;
 using System.Security.Cryptography;
 using System.Text;
 using InterCargo.Application.Interfaces;
+using InterCargo.BusinessLogic.Validation;
 
 namespace InterCargo.Pages.Employees
 {
@@ -100,7 +101,7 @@ namespace InterCargo.Pages.Employees
 
             [Required(ErrorMessage = "Password is required")]
             [DataType(DataType.Password)]
-            [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long")]
+            [PasswordValidation]
             public string Password { get; set; }
 
             [Required(ErrorMessage = "Please confirm your password")]

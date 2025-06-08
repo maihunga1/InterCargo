@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InterCargo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250602033715_AddedContainerType")]
-    partial class AddedContainerType
+    [Migration("20250608073602_ChangedCompanyNameStatusToOptional")]
+    partial class ChangedCompanyNameStatusToOptional
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -79,11 +79,23 @@ namespace InterCargo.Migrations
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("CustomerResponseMessage")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CustomerResponseStatus")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("DateIssued")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Destination")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("Discount")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("FinalPrice")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ImportExportType")
@@ -107,6 +119,13 @@ namespace InterCargo.Migrations
 
                     b.Property<string>("QuarantineRequirements")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RequestId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SelectedChargeItemsJson")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Source")
@@ -133,7 +152,6 @@ namespace InterCargo.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CompanyName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 namespace InterCargo.BusinessLogic.Entities
 {
@@ -18,8 +19,8 @@ namespace InterCargo.BusinessLogic.Entities
         public string FamilyName { get; set; }
         [Required]
         public string PhoneNumber { get; set; }
+        public string? CompanyName { get; set; }
         [Required]
-        public string CompanyName { get; set; }
         public string Address { get; set; }
     }
 }
