@@ -52,6 +52,17 @@ namespace InterCargo.Pages.Users
             try
             {
                 UserQuotations = await _quotationService.GetQuotationsByCustomerAsync(userId.ToUpper());
+
+                // If we have a newly submitted quotation, highlight it
+                if (TempData["SubmittedRequestId"] is string submittedRequestId)
+                {
+                    var submittedQuotation = UserQuotations.FirstOrDefault(q => q.RequestId == submittedRequestId);
+                    if (submittedQuotation != null)
+                    {
+                        viewId = submittedQuotation.Id;
+                    }
+                }
+
                 foreach (var q in UserQuotations)
                 {
                     if (!string.IsNullOrEmpty(q.SelectedChargeItemsJson))

@@ -52,5 +52,7 @@ namespace InterCargo.BusinessLogic.Entities
         public decimal? FinalPrice { get; set; } // Final price after discount
 
         public string? SelectedChargeItemsJson { get; set; } // JSON string of selected charge items
+
+        public string RequestId { get; set; } // 8-character request ID for tracking
     }
 }

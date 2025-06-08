@@ -61,8 +61,8 @@
                         <tbody>
                             @foreach (var quotation in Model.UserQuotations.OrderByDescending(q => q.DateIssued))
                             {
-                                <tr class="quotation-row" data-status="@quotation.Status.ToLower()">
-                                    <td>@quotation.Id.ToString("N").Substring(0, 8).ToUpper()</td>
+                                <tr class="quotation-row @(TempData["SubmittedRequestId"]?.ToString() == quotation.RequestId ? "table-info" : "")" data-status="@quotation.Status.ToLower()">
+                                    <td>@quotation.RequestId</td>
                                     <td>@quotation.Source</td>
                                     <td>@quotation.Destination</td>
                                     <td>@quotation.NumberOfContainers</td>
@@ -101,7 +101,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="quotationModalLabel-@quotation.Id">
-                        Quotation Details - @quotation.Id.ToString("N").Substring(0, 8).ToUpper()
+                        Quotation Details - @quotation.RequestId
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                         aria-label="Close"></button>
