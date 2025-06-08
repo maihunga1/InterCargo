@@ -7,6 +7,7 @@ using InterCargo.BusinessLogic.Entities;
 using InterCargo.Application.Interfaces;
 using InterCargo.Application.Services;
 using InterCargo.BusinessLogic.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace InterCargo.Tests
 {
@@ -167,6 +168,152 @@ namespace InterCargo.Tests
             // For 2 containers: 2750
             // With discount of 274.90: 2750 - 274.90 = 2475.10
             Assert.Equal(2475.10m, result);
+        }
+
+        [Fact]
+        public async Task CreateQuotation_WithAllRequiredFields_ShouldSucceed()
+        {
+            // Arrange
+            var newQuotation = new Quotation
+            {
+                Id = Guid.NewGuid(),
+                CustomerId = Guid.NewGuid(),
+                RequestId = "QT123456",
+                Source = "Brisbane",
+                Destination = "Sydney",
+                ContainerType = "20Feet",
+                NumberOfContainers = 2,
+                PackageNature = "General Cargo",
+                ImportExportType = "Import",
+                PackingUnpacking = "Packing Required",
+                QuarantineRequirements = "Inspection Required",
+                Status = "Pending",
+                Message = "New quotation request",
+                DateIssued = DateTime.UtcNow
+            };
+
+            _mockQuotationRepository
+                .Setup(x => x.AddQuotationAsync(It.IsAny<Quotation>()))
+                .Returns(Task.FromResult<Quotation?>(newQuotation));
+
+            // Act
+            await _quotationService.AddQuotationAsync(newQuotation);
+
+            // Assert
+            _mockQuotationRepository.Verify(x => x.AddQuotationAsync(It.Is<Quotation>(q => 
+                q.RequestId == newQuotation.RequestId &&
+                q.Source == newQuotation.Source &&
+                q.Destination == newQuotation.Destination &&
+                q.PackageNature == newQuotation.PackageNature &&
+                q.ImportExportType == newQuotation.ImportExportType &&
+                q.PackingUnpacking == newQuotation.PackingUnpacking &&
+                q.QuarantineRequirements == newQuotation.QuarantineRequirements
+            )), Times.Once);
+        }
+
+        [Theory]
+        [InlineData("", "Sydney", "Invalid source")]
+        [InlineData("Brisbane", "", "Invalid destination")]
+        [InlineData("Brisbane", "Sydney", "")]
+        public void CreateQuotation_WithMissingRequiredFields_ShouldFail(string source, string destination, string packageNature)
+        {
+            // Arrange
+            var newQuotation = new Quotation
+            {
+                Id = Guid.NewGuid(),
+                CustomerId = Guid.NewGuid(),
+                RequestId = "QT123456",
+                Source = source,
+                Destination = destination,
+                ContainerType = "20Feet",
+                NumberOfContainers = 2,
+                PackageNature = packageNature,
+                ImportExportType = "Import",
+                PackingUnpacking = "Packing Required",
+                QuarantineRequirements = "Inspection Required",
+                Status = "Pending",
+                Message = "New quotation request",
+                DateIssued = DateTime.UtcNow
+            };
+
+            // Act & Assert
+            var validationContext = new ValidationContext(newQuotation);
+            Assert.Throws<ValidationException>(() => Validator.ValidateObject(newQuotation, validationContext, true));
+        }
+
+        [Theory]
+        [InlineData("Import", "Packing Required", "Inspection Required")]
+        [InlineData("Export", "Unpacking Required", "No Inspection")]
+        [InlineData("Import", "No Packing Required", "Fumigation Required")]
+        public async Task CreateQuotation_WithDifferentJobNatures_ShouldSucceed(string importExport, string packingUnpacking, string quarantine)
+        {
+            // Arrange
+            var newQuotation = new Quotation
+            {
+                Id = Guid.NewGuid(),
+                CustomerId = Guid.NewGuid(),
+                RequestId = "QT123456",
+                Source = "Brisbane",
+                Destination = "Sydney",
+                ContainerType = "20Feet",
+                NumberOfContainers = 2,
+                PackageNature = "General Cargo",
+                ImportExportType = importExport,
+                PackingUnpacking = packingUnpacking,
+                QuarantineRequirements = quarantine,
+                Status = "Pending",
+                Message = "New quotation request",
+                DateIssued = DateTime.UtcNow
+            };
+
+            _mockQuotationRepository
+                .Setup(x => x.AddQuotationAsync(It.IsAny<Quotation>()))
+                .Returns(Task.FromResult<Quotation?>(newQuotation));
+
+            // Act
+            await _quotationService.AddQuotationAsync(newQuotation);
+
+            // Assert
+            _mockQuotationRepository.Verify(x => x.AddQuotationAsync(It.Is<Quotation>(q => 
+                q.ImportExportType == importExport &&
+                q.PackingUnpacking == packingUnpacking &&
+                q.QuarantineRequirements == quarantine
+            )), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateQuotation_ShouldUpdateStatusAndMessage()
+        {
+            // Arrange
+            var quotationId = Guid.NewGuid();
+            var originalQuotation = new Quotation
+            {
+                Id = quotationId,
+                CustomerId = Guid.NewGuid(),
+                RequestId = "QT123456",
+                Status = "Pending",
+                Message = "Initial request"
+            };
+
+            _mockQuotationRepository
+                .Setup(x => x.GetQuotationByIdAsync(quotationId))
+                .Returns(Task.FromResult<Quotation?>(originalQuotation));
+
+            originalQuotation.Status = "Approved";
+            originalQuotation.Message = "Quotation approved with standard rates";
+
+            _mockQuotationRepository
+                .Setup(x => x.UpdateQuotationAsync(It.IsAny<Quotation>()))
+                .Returns(Task.FromResult<Quotation?>(originalQuotation));
+
+            // Act
+            await _quotationService.UpdateQuotationAsync(originalQuotation);
+
+            // Assert
+            _mockQuotationRepository.Verify(x => x.UpdateQuotationAsync(It.Is<Quotation>(q => 
+                q.Status == "Approved" &&
+                q.Message == "Quotation approved with standard rates"
+            )), Times.Once);
         }
     }
 }
