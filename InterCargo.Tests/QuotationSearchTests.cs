@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace InterCargo.Tests
 {
@@ -31,7 +34,7 @@ namespace InterCargo.Tests
             _confirmModel = new ConfirmModel(_mockQuotationService.Object, _mockLogger.Object, _mockUserAppService.Object);
         }
 
-        private void SetupEmployeeContext()
+        private async Task SetupEmployeeContext()
         {
             var httpContext = new DefaultHttpContext();
             var claims = new List<Claim>
@@ -39,8 +42,18 @@ namespace InterCargo.Tests
                 new Claim(ClaimTypes.Name, "testuser"),
                 new Claim("UserRole", "Employee")
             };
-            var identity = new ClaimsIdentity(claims);
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
+
+            var mockAuthService = new Mock<IAuthenticationService>();
+            mockAuthService.Setup(x => x.SignInAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<ClaimsPrincipal>(), It.IsAny<AuthenticationProperties>()))
+                .Returns(Task.CompletedTask);
+
+            var mockServiceProvider = new Mock<IServiceProvider>();
+            mockServiceProvider.Setup(x => x.GetService(typeof(IAuthenticationService)))
+                .Returns(mockAuthService.Object);
+
+            httpContext.RequestServices = mockServiceProvider.Object;
             httpContext.User = principal;
 
             _confirmModel.PageContext = new PageContext
@@ -53,7 +66,7 @@ namespace InterCargo.Tests
         public async Task SearchQuotations_ByCustomerName_ShouldReturnMatchingQuotations()
         {
             // Arrange
-            SetupEmployeeContext();
+            await SetupEmployeeContext();
             var searchQuery = "John Doe";
             var customerId = Guid.NewGuid();
             var expectedUser = new User
@@ -108,7 +121,7 @@ namespace InterCargo.Tests
         public async Task SearchQuotations_ByCustomerEmail_ShouldReturnMatchingQuotations()
         {
             // Arrange
-            SetupEmployeeContext();
+            await SetupEmployeeContext();
             var searchQuery = "john.doe@example.com";
             var customerId = Guid.NewGuid();
             var expectedUser = new User
@@ -154,7 +167,7 @@ namespace InterCargo.Tests
         public async Task SearchQuotations_CustomerWithMoreThanThreeQuotations_ShouldBeEligibleForDiscount()
         {
             // Arrange
-            SetupEmployeeContext();
+            await SetupEmployeeContext();
             var searchQuery = "John Doe";
             var customerId = Guid.NewGuid();
             var expectedUser = new User
