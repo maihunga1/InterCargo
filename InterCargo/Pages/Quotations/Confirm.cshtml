@@ -61,7 +61,7 @@
                     @foreach (var quotation in Model.AllQuotations)
                     {
                         <tr>
-                            <td>@quotation.Id.ToString("N").Substring(0, 8).ToUpper()</td>
+                            <td>@quotation.RequestId</td>
                             <td>@quotation.Source</td>
                             <td>@quotation.Destination</td>
                             <td>@quotation.NumberOfContainers</td>
@@ -93,7 +93,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Quotation Details - @Model.SelectedQuotation.Id.ToString("N").Substring(0, 8).ToUpper()</h5>
+                        <h5 class="modal-title">Quotation Details - @Model.SelectedQuotation.RequestId</h5>
                         <a href="?status=@Model.FilterStatus" class="btn-close"></a>
                     </div>
                     <div class="modal-body">

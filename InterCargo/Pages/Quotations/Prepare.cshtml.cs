@@ -78,7 +78,7 @@ namespace InterCargo.Pages.Quotations
             }
 
             quotation.Status = status ?? "Approved";
-            quotation.Message = message ?? $"Quotation {quotation.Id.ToString("N").Substring(0, 8).ToUpper()} has been approved";
+            quotation.Message = message ?? $"Quotation {quotation.RequestId} has been approved";
             await _quotationService.UpdateQuotationAsync(quotation);
 
             SelectedQuotation = quotation;

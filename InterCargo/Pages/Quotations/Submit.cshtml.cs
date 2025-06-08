@@ -38,6 +38,9 @@ namespace InterCargo.Pages.Quotations
                 return RedirectToPage("/Users/LoginUser", new { returnUrl = Url.Page("/Quotations/Submit") });
             }
 
+            // Clear any existing status message when starting a new quotation
+            StatusMessage = null;
+
             // Only generate new RequestId if it's not already set
             if (string.IsNullOrEmpty(RequestId))
             {
@@ -105,18 +108,9 @@ namespace InterCargo.Pages.Quotations
                     Message = $"New quotation request from customer (Request ID: {RequestId})",
                     CustomerResponseStatus = "Pending",
                     DateIssued = DateTime.UtcNow,
-                    ContainerType = Input.ContainerType
+                    ContainerType = Input.ContainerType,
+                    RequestId = RequestId
                 };
-
-                _logger.LogInformation("Preparing to save quotation: {QuotationDetails}",
-                    $"ID: {quotation.Id}, " +
-                    $"CustomerId: {quotation.CustomerId}, " +
-                    $"Source: {quotation.Source}, " +
-                    $"Destination: {quotation.Destination}, " +
-                    $"Containers: {quotation.NumberOfContainers}, " +
-                    $"Import/Export: {quotation.ImportExportType}, " +
-                    $"Packing/Unpacking: {quotation.PackingUnpacking}, " +
-                    $"Status: {quotation.Status}");
 
                 await _quotationService.AddQuotationAsync(quotation);
                 
@@ -125,8 +119,9 @@ namespace InterCargo.Pages.Quotations
                 
                 _logger.LogInformation("Quotation saved successfully with status: {Status}", quotation.Status);
 
-                StatusMessage = "Quotation submitted successfully! You will be redirected to your dashboard in 3 seconds...";
-                return Page();
+                StatusMessage = "Quotation submitted successfully! You will be redirected to your dashboard in 2 seconds...";
+                TempData["SubmittedRequestId"] = RequestId;
+                return Page();  // Return to the same page to show the success message and trigger the redirect
             }
             catch (Exception ex)
             {
