@@ -3155,25 +3155,24 @@
     ]
   },
   "packageFolders": {
-    "/Users/vohungtin/.nuget/packages/": {}
+    "/Users/qhungmai/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/Interport-Cargo.csproj",
+      "projectUniqueName": "/Users/qhungmai/Documents/GitHub/InterCargo/InterCargo/Interport-Cargo.csproj",
       "projectName": "Interport-Cargo",
-      "projectPath": "/Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/Interport-Cargo.csproj",
-      "packagesPath": "/Users/vohungtin/.nuget/packages/",
-      "outputPath": "/Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/obj/",
+      "projectPath": "/Users/qhungmai/Documents/GitHub/InterCargo/InterCargo/Interport-Cargo.csproj",
+      "packagesPath": "/Users/qhungmai/.nuget/packages/",
+      "outputPath": "/Users/qhungmai/Documents/GitHub/InterCargo/InterCargo/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/vohungtin/.nuget/NuGet/NuGet.Config"
+        "/Users/qhungmai/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "/opt/homebrew/Cellar/dotnet/9.0.5/libexec/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3192,7 +3191,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.100"
+      "SdkAnalysisLevel": "9.0.200"
     },
     "frameworks": {
       "net9.0": {
@@ -3232,16 +3231,8 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/9.0.5/libexec/sdk/9.0.106/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file /Users/vohungtin/Downloads/QUT/IFN662 - Final Project/FinalInterCargo/InterCargo/InterCargo/obj/project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
-    }
-  ]
+  }
 }
